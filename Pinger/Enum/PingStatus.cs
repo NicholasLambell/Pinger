@@ -39,7 +39,7 @@ namespace Pinger.Enum {
 				case PingStatus.Success:
 					return Colors.Green;
 				case PingStatus.Warning:
-					return Colors.Yellow;
+					return Colors.Gold;
 				case PingStatus.Critical:
 					return Colors.Orange;
 				case PingStatus.Fail:
