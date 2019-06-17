@@ -7,6 +7,8 @@ namespace Pinger.Container {
 	public class PingSite:BindableBase {
 		#region Props
 
+		public BackgroundWorker Worker {get;}
+
 		private Url _location;
 		public Url Location {
 			get => _location;
@@ -40,6 +42,9 @@ namespace Pinger.Container {
 			Ping = 0;
 			Status = PingStatus.None;
 			StatusMessage = Status.StatusMessage();
+
+			Worker = new BackgroundWorker();
+			Worker.DoWork += Worker_Refresh;
 		}
 
 		private void Worker_Refresh(object sender, DoWorkEventArgs e) {
@@ -82,9 +87,7 @@ namespace Pinger.Container {
 			Status = PingStatus.Pinging;
 			StatusMessage = Status.StatusMessage();
 
-			BackgroundWorker worker = new BackgroundWorker();
-			worker.DoWork += Worker_Refresh;
-			worker.RunWorkerAsync();
+			Worker.RunWorkerAsync();
 		}
 	}
 }
