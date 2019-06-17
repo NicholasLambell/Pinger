@@ -5,6 +5,7 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:local="clr-namespace:Pinger"
+	xmlns:dd="urn:gong-wpf-dragdrop"
 	xmlns:converter="clr-namespace:Pinger.Converter"
 	mc:Ignorable="d"
 	Title="Pinger"
@@ -43,6 +44,8 @@
 
 		<ListBox
 			ItemsSource="{Binding Sites}"
+			dd:DragDrop.IsDragSource="True"
+			dd:DragDrop.IsDropTarget="True"
 			Grid.Row="1"
 		>
 			<ListBox.ItemTemplate>
