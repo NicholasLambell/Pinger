@@ -25,20 +25,26 @@
 
 		<Grid Grid.Row="0">
 			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto"/>
 				<ColumnDefinition Width="*"/>
-				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="Auto"/>
 			</Grid.ColumnDefinitions>
 
 			<Button
-				Content="Refresh"
+				Content="Manual Refresh"
 				Command="{Binding CommandRefresh}"
 				Grid.Column="0"
 			/>
 
-			<Button
-				Content="Add"
-				Command="{Binding CommandAdd}"
+			<TextBox
+				Text="{Binding SiteName}"
 				Grid.Column="1"
+			/>
+
+			<Button
+				Content="Add Site"
+				Command="{Binding CommandAdd}"
+				Grid.Column="2"
 			/>
 		</Grid>
 
@@ -92,7 +98,7 @@
 								Grid.Column="0"
 							/>
 							<TextBlock
-								Text="{Binding Location.Value}"
+								Text="{Binding Location.AbsoluteUri}"
 								Grid.Row="0"
 								Grid.Column="1"
 							/>
@@ -109,17 +115,6 @@
 								Grid.Column="1"
 							/>
 						</Grid>
-
-						<!-- <StackPanel -->
-						<!-- 	Grid.Column="2" -->
-						<!-- > -->
-						<!-- 	<TextBlock -->
-						<!-- 		Text="{Binding Location.Value, StringFormat=Site: {0}}" -->
-						<!-- 	/> -->
-						<!-- 	<TextBlock -->
-						<!-- 		Text="{Binding Ping, StringFormat=Ping: {0}ms}" -->
-						<!-- 	/> -->
-						<!-- </StackPanel> -->
 					</Grid>
 				</DataTemplate>
 			</ListBox.ItemTemplate>

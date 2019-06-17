@@ -1,19 +1,26 @@
+using System;
 using System.Collections.ObjectModel;
-using System.Security.Policy;
+using System.Windows;
 using Pinger.Container;
 
 namespace Pinger {
-	public class ViewModel {
+	public class ViewModel : BindableBase {
 		public ObservableCollection<PingSite> Sites {get; set;}
 
 		public CommandHandler CommandRefresh {get; set;}
 		public CommandHandler CommandAdd {get; set;}
 
+		private string _siteName;
+		public string SiteName {
+			get => _siteName;
+			set => SetProperty(ref _siteName, value);
+		}
+
 		public ViewModel() {
 			Sites = new ObservableCollection<PingSite>();
 
 			Sites.Add(new PingSite(
-				new Url("www.google.com")
+				new Uri("https://www.google.com")
 			));
 
 			CommandRefresh = new CommandHandler(
@@ -32,9 +39,16 @@ namespace Pinger {
 		}
 
 		private void BtnAdd_Clicked(object param) {
-			Sites.Add(new PingSite(
-				new Url("www.test.com")
-			));
+			Uri newUri;
+			try {
+				newUri = new UriBuilder(SiteName).Uri;
+			} catch (UriFormatException) {
+				MessageBox.Show("Please enter a valid Site Name");
+				return;
+			}
+
+			SiteName = string.Empty;
+			Sites.Add(new PingSite(newUri));
 		}
 	}
 }

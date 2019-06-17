@@ -1,6 +1,6 @@
+using System;
 using System.ComponentModel;
 using System.Net.NetworkInformation;
-using System.Security.Policy;
 using Pinger.Enum;
 
 namespace Pinger.Container {
@@ -9,8 +9,8 @@ namespace Pinger.Container {
 
 		public BackgroundWorker Worker {get;}
 
-		private Url _location;
-		public Url Location {
+		private Uri _location;
+		public Uri Location {
 			get => _location;
 			set => SetProperty(ref _location, value);
 		}
@@ -37,7 +37,7 @@ namespace Pinger.Container {
 
 		#endregion
 
-		public PingSite(Url location) {
+		public PingSite(Uri location) {
 			Location = location;
 			Ping = 0;
 			Status = PingStatus.None;
@@ -52,7 +52,7 @@ namespace Pinger.Container {
 
 			try {
 				using (Ping ping = new Ping()) {
-					PingReply reply = ping.Send(Location.Value);
+					PingReply reply = ping.Send(Location.Host);
 
 					if (
 						reply != null &&
@@ -61,10 +61,10 @@ namespace Pinger.Container {
 						Ping = (int)reply.RoundtripTime;
 
 						pingStatus = PingStatus.Success;
-						if (Ping >= 100) {
-							pingStatus = PingStatus.Warning;
-						} else if (Ping >= 200) {
+						if (Ping >= 200) {
 							pingStatus = PingStatus.Critical;
+						} else if (Ping >= 100) {
+							pingStatus = PingStatus.Warning;
 						}
 					}
 				}
