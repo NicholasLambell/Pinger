@@ -24,7 +24,16 @@ namespace Pinger.Container {
 		private PingStatus _status;
 		public PingStatus Status {
 			get => _status;
-			set => SetProperty(ref _status, value);
+			set {
+				SetProperty(ref _status, value);
+
+				// Update status message
+				SetProperty(
+					ref _statusMessage,
+					Status.StatusMessage(),
+					nameof(StatusMessage)
+				);
+			}
 		}
 
 		private string _statusMessage;
@@ -41,7 +50,6 @@ namespace Pinger.Container {
 			Location = location;
 			Ping = 0;
 			Status = PingStatus.None;
-			StatusMessage = Status.StatusMessage();
 
 			Worker = new BackgroundWorker();
 			Worker.DoWork += Worker_Refresh;
@@ -73,8 +81,6 @@ namespace Pinger.Container {
 			}
 
 			Status = pingStatus;
-			StatusMessage = Status.StatusMessage();
-
 			Refreshing = false;
 		}
 
@@ -83,9 +89,7 @@ namespace Pinger.Container {
 				return;
 
 			Refreshing = true;
-
 			Status = PingStatus.Pinging;
-			StatusMessage = Status.StatusMessage();
 
 			Worker.RunWorkerAsync();
 		}
