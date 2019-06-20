@@ -7,8 +7,6 @@ namespace Pinger.Container {
 	public class PingSite:BindableBase {
 		#region Props
 
-		public BackgroundWorker Worker {get;}
-
 		private Uri _location;
 		public Uri Location {
 			get => _location;
@@ -50,17 +48,20 @@ namespace Pinger.Container {
 			Location = location;
 			Ping = 0;
 			Status = PingStatus.None;
-
-			Worker = new BackgroundWorker();
-			Worker.DoWork += Worker_Refresh;
 		}
 
-		private void Worker_Refresh(object sender, DoWorkEventArgs e) {
+		public async void Refresh() {
+			if (Refreshing)
+				return;
+
+			Refreshing = true;
+			Status = PingStatus.Pinging;
+
 			PingStatus pingStatus = PingStatus.Fail;
 
 			try {
 				using (Ping ping = new Ping()) {
-					PingReply reply = ping.Send(Location.Host);
+					PingReply reply = await ping.SendPingAsync(Location.Host);
 
 					if (
 						reply != null &&
@@ -82,16 +83,6 @@ namespace Pinger.Container {
 
 			Status = pingStatus;
 			Refreshing = false;
-		}
-
-		public void Refresh() {
-			if (Refreshing)
-				return;
-
-			Refreshing = true;
-			Status = PingStatus.Pinging;
-
-			Worker.RunWorkerAsync();
 		}
 	}
 }
