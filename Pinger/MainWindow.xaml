@@ -7,6 +7,7 @@
 	xmlns:local="clr-namespace:Pinger"
 	xmlns:dd="urn:gong-wpf-dragdrop"
 	xmlns:converter="clr-namespace:Pinger.Converter"
+	xmlns:control="clr-namespace:Pinger.Control"
 	mc:Ignorable="d"
 	Title="Pinger"
 	Height="500"
@@ -54,6 +55,12 @@
 			dd:DragDrop.IsDropTarget="True"
 			Grid.Row="1"
 		>
+			<ListBox.ItemContainerStyle>
+				<Style TargetType="ListBoxItem">
+					<Setter Property="Padding" Value="5" />
+					<Setter Property="HorizontalContentAlignment" Value="Stretch" />
+				</Style>
+			</ListBox.ItemContainerStyle>
 			<ListBox.ItemTemplate>
 				<DataTemplate>
 					<Grid>
@@ -61,6 +68,8 @@
 							<ColumnDefinition Width="Auto" />
 							<ColumnDefinition Width="Auto" />
 							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="Auto" />
 						</Grid.ColumnDefinitions>
 
 						<Rectangle
@@ -115,6 +124,23 @@
 								Grid.Column="1"
 							/>
 						</Grid>
+
+						<Rectangle
+							VerticalAlignment="Stretch"
+							Width="3"
+							Margin="3,0"
+							Fill="Gainsboro"
+							Grid.Column="3"
+						/>
+
+						<control:RemoveButton
+							Command="{ Binding
+								RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}},
+								Path=DataContext.CommandRemove
+							}"
+							CommandParameter="{ Binding }"
+							Grid.Column="4"
+						/>
 					</Grid>
 				</DataTemplate>
 			</ListBox.ItemTemplate>

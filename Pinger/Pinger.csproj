@@ -57,10 +57,14 @@
     <Compile Include="BindableBase.cs" />
     <Compile Include="CommandHandler.cs" />
     <Compile Include="Container\PingSite.cs" />
+    <Compile Include="Control\RemoveButton.xaml.cs">
+      <DependentUpon>RemoveButton.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Converter\PingStatusToColor.cs" />
     <Compile Include="Enum\PingStatus.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="ViewModel.cs" />
+    <Page Include="Control\RemoveButton.xaml" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

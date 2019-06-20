@@ -9,6 +9,7 @@ namespace Pinger {
 
 		public CommandHandler CommandRefresh {get; set;}
 		public CommandHandler CommandAdd {get; set;}
+		public CommandHandler CommandRemove {get; set;}
 
 		private string _siteName;
 		public string SiteName {
@@ -30,6 +31,10 @@ namespace Pinger {
 			CommandAdd = new CommandHandler(
 				BtnAdd_Clicked
 			);
+
+			CommandRemove = new CommandHandler(
+				BtnRemove_Clicked
+			);
 		}
 
 		private void BtnRefresh_Clicked(object param) {
@@ -49,6 +54,20 @@ namespace Pinger {
 
 			SiteName = string.Empty;
 			Sites.Add(new PingSite(newUri));
+		}
+
+		private void BtnRemove_Clicked(object param) {
+			if (!(param is PingSite site))
+				return;
+
+			MessageBoxResult confirmResult = MessageBox.Show(
+				"Do you really want to delete this Site?",
+				"Confirm Deletion",
+				MessageBoxButton.YesNo
+			);
+
+			if (confirmResult == MessageBoxResult.Yes)
+				Sites.Remove(site);
 		}
 	}
 }
