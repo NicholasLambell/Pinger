@@ -1,6 +1,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Windows;
+using System.Windows.Threading;
 using Pinger.Container;
 
 namespace Pinger {
@@ -10,6 +11,17 @@ namespace Pinger {
 		public CommandHandler CommandRefresh {get; set;}
 		public CommandHandler CommandAdd {get; set;}
 		public CommandHandler CommandRemove {get; set;}
+
+		public DispatcherTimer RefreshTimer {get; set;}
+
+		private int _refreshDelay;
+		public int RefreshDelay {
+			get => _refreshDelay;
+			set {
+				_refreshDelay = value;
+				SetTimerDelay();
+			}
+		}
 
 		private string _siteName;
 		public string SiteName {
@@ -24,6 +36,10 @@ namespace Pinger {
 				new Uri("https://www.google.com")
 			));
 
+			RefreshTimer = new DispatcherTimer();
+			RefreshTimer.Tick += RefreshTimer_Tick;
+			RefreshDelay = 3;
+
 			CommandRefresh = new CommandHandler(
 				BtnRefresh_Clicked
 			);
@@ -35,12 +51,34 @@ namespace Pinger {
 			CommandRemove = new CommandHandler(
 				BtnRemove_Clicked
 			);
+
+			// If we have any pre-loaded sites trigger an initial refresh
+			if (Sites.Count > 0)
+				RefreshSites();
 		}
 
-		private void BtnRefresh_Clicked(object param) {
+		private void SetTimerDelay() {
+			if (RefreshDelay == 0) {
+				RefreshTimer.Stop();
+				return;
+			}
+
+			RefreshTimer.Interval = TimeSpan.FromSeconds(RefreshDelay);
+			RefreshTimer.Start();
+		}
+
+		private void RefreshSites() {
 			foreach (PingSite site in Sites) {
 				site.Refresh();
 			}
+		}
+
+		private void RefreshTimer_Tick(object sender, EventArgs e) {
+			RefreshSites();
+		}
+
+		private void BtnRefresh_Clicked(object param) {
+			RefreshSites();
 		}
 
 		private void BtnAdd_Clicked(object param) {

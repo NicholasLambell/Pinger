@@ -8,6 +8,7 @@
 	xmlns:dd="urn:gong-wpf-dragdrop"
 	xmlns:converter="clr-namespace:Pinger.Converter"
 	xmlns:control="clr-namespace:Pinger.Control"
+	xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
 	mc:Ignorable="d"
 	Title="Pinger"
 	Height="500"
@@ -31,11 +32,32 @@
 				<ColumnDefinition Width="Auto"/>
 			</Grid.ColumnDefinitions>
 
-			<Button
-				Content="Manual Refresh"
-				Command="{Binding CommandRefresh}"
+			<Grid
 				Grid.Column="0"
-			/>
+			>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+
+				<TextBlock
+					Text="Refresh Interval: "
+					Grid.Column="0"
+				/>
+
+				<xctk:IntegerUpDown
+					Minimum="1"
+					Value="{ Binding RefreshDelay }"
+					Grid.Column="1"
+				/>
+
+				<Button
+					Content="Refresh"
+					Command="{Binding CommandRefresh}"
+					Grid.Column="2"
+				/>
+			</Grid>
 
 			<TextBox
 				Text="{Binding SiteName}"
