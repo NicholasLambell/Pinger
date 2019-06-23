@@ -54,7 +54,6 @@ namespace Pinger.Container {
 				return;
 
 			Refreshing = true;
-			Status = PingStatus.Pinging;
 
 			PingStatus pingStatus = PingStatus.Fail;
 
