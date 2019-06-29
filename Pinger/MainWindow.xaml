@@ -19,18 +19,17 @@
 	<Window.Resources>
 		<converter:PingStatusToColor x:Key="PingStatusToColor" />
 	</Window.Resources>
-	<Grid>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto"/>
-			<RowDefinition Height="*"/>
-		</Grid.RowDefinitions>
-
-		<Grid Grid.Row="0">
+	<DockPanel>
+		<Grid
+			Margin="5"
+			DockPanel.Dock="Top"
+		>
 			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="Auto"/>
 				<ColumnDefinition Width="*"/>
 				<ColumnDefinition Width="Auto"/>
+				<ColumnDefinition Width="2*"/>
 			</Grid.ColumnDefinitions>
+
 
 			<Grid
 				Grid.Column="0"
@@ -38,11 +37,11 @@
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="Auto" />
 					<ColumnDefinition Width="*" />
-					<ColumnDefinition Width="*" />
 				</Grid.ColumnDefinitions>
 
 				<TextBlock
 					Text="Refresh Interval: "
+					VerticalAlignment="Center"
 					Grid.Column="0"
 				/>
 
@@ -51,31 +50,50 @@
 					Value="{ Binding RefreshDelay }"
 					Grid.Column="1"
 				/>
-
-				<Button
-					Content="Refresh"
-					Command="{Binding CommandRefresh}"
-					Grid.Column="2"
-				/>
 			</Grid>
 
-			<TextBox
-				Text="{Binding SiteName}"
+			<Rectangle
+				VerticalAlignment="Stretch"
+				Width="3"
+				Margin="5,0"
+				Fill="Gainsboro"
 				Grid.Column="1"
 			/>
 
-			<Button
-				Content="Add Site"
-				Command="{Binding CommandAdd}"
+			<Grid
 				Grid.Column="2"
-			/>
+			>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="Auto" />
+				</Grid.ColumnDefinitions>
+
+				<TextBox
+					Text="{Binding SiteName}"
+					Grid.Column="0"
+				>
+					<TextBox.InputBindings>
+						<KeyBinding
+							Key="Enter"
+							Command="{ Binding CommandSiteNameSubmit }"
+							CommandParameter="{ Binding Path=Text, RelativeSource={RelativeSource AncestorType={x:Type TextBox}} }"
+						/>
+					</TextBox.InputBindings>
+				</TextBox>
+
+				<Button
+					Content="Add Site"
+					Padding="10,0"
+					Command="{Binding CommandAdd}"
+					Grid.Column="1"
+				/>
+			</Grid>
 		</Grid>
 
 		<ListBox
 			ItemsSource="{Binding Sites}"
 			dd:DragDrop.IsDragSource="True"
 			dd:DragDrop.IsDropTarget="True"
-			Grid.Row="1"
 		>
 			<ListBox.ItemContainerStyle>
 				<Style TargetType="ListBoxItem">
@@ -167,5 +185,5 @@
 				</DataTemplate>
 			</ListBox.ItemTemplate>
 		</ListBox>
-	</Grid>
+	</DockPanel>
 </Window>

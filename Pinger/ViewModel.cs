@@ -11,6 +11,7 @@ namespace Pinger {
 		public CommandHandler CommandRefresh {get; set;}
 		public CommandHandler CommandAdd {get; set;}
 		public CommandHandler CommandRemove {get; set;}
+		public CommandHandler CommandSiteNameSubmit {get; set;}
 
 		public DispatcherTimer RefreshTimer {get; set;}
 
@@ -38,14 +39,18 @@ namespace Pinger {
 
 			RefreshTimer = new DispatcherTimer();
 			RefreshTimer.Tick += RefreshTimer_Tick;
-			RefreshDelay = 3;
+			RefreshDelay = 2;
 
 			CommandRefresh = new CommandHandler(
 				BtnRefresh_Clicked
 			);
 
 			CommandAdd = new CommandHandler(
-				BtnAdd_Clicked
+				AddSite
+			);
+
+			CommandSiteNameSubmit = new CommandHandler(
+				AddSite
 			);
 
 			CommandRemove = new CommandHandler(
@@ -81,10 +86,17 @@ namespace Pinger {
 			RefreshSites();
 		}
 
-		private void BtnAdd_Clicked(object param) {
+		private void AddSite(object param) {
+			string siteName = SiteName;
+			if (
+				param is string &&
+				!string.IsNullOrWhiteSpace(param.ToString())
+			)
+				siteName = param.ToString();
+
 			Uri newUri;
 			try {
-				newUri = new UriBuilder(SiteName).Uri;
+				newUri = new UriBuilder(siteName).Uri;
 			} catch (UriFormatException) {
 				MessageBox.Show("Please enter a valid Site Name");
 				return;
