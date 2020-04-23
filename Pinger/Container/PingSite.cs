@@ -1,10 +1,15 @@
 using System;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Net.NetworkInformation;
+using System.Windows;
 using Pinger.Enum;
 
 namespace Pinger.Container {
 	public class PingSite:BindableBase {
 		#region Props
+
+		public ObservableCollection<PingSiteHistory> PingHistory {get; set;}
 
 		private Uri _location;
 		public Uri Location {
@@ -47,6 +52,25 @@ namespace Pinger.Container {
 			Location = location;
 			Ping = 0;
 			Status = PingStatus.None;
+			PingHistory = new ObservableCollection<PingSiteHistory>();
+		}
+
+		private void RecordHistory() {
+			PingHistory.Insert(
+				0,
+				new PingSiteHistory(
+					Ping,
+					Status,
+					StatusMessage
+				)
+			);
+
+			if (PingHistory.Count <= 100)
+				return;
+
+			for (int i = 100; i < PingHistory.Count; i++) {
+				PingHistory.RemoveAt(i);
+			}
 		}
 
 		public async void Refresh() {
@@ -55,6 +79,7 @@ namespace Pinger.Container {
 
 			Refreshing = true;
 
+			int targetPing = 0;
 			PingStatus pingStatus = PingStatus.Fail;
 
 			try {
@@ -65,12 +90,12 @@ namespace Pinger.Container {
 						reply != null &&
 						reply.Status == IPStatus.Success
 					) {
-						Ping = (int)reply.RoundtripTime;
+						targetPing = (int)reply.RoundtripTime;
 
 						pingStatus = PingStatus.Success;
-						if (Ping >= 200) {
+						if (targetPing >= 200) {
 							pingStatus = PingStatus.Critical;
-						} else if (Ping >= 100) {
+						} else if (targetPing >= 100) {
 							pingStatus = PingStatus.Warning;
 						}
 					}
@@ -79,7 +104,10 @@ namespace Pinger.Container {
 				// Nothing
 			}
 
+			Ping = targetPing;
 			Status = pingStatus;
+			RecordHistory();
+
 			Refreshing = false;
 		}
 	}

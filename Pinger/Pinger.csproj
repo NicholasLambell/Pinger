@@ -78,6 +78,7 @@
     <Compile Include="BindableBase.cs" />
     <Compile Include="CommandHandler.cs" />
     <Compile Include="Container\PingSite.cs" />
+    <Compile Include="Container\PingSiteHistory.cs" />
     <Compile Include="Control\RemoveButton.xaml.cs">
       <DependentUpon>RemoveButton.xaml</DependentUpon>
     </Compile>

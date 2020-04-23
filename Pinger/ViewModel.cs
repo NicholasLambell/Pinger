@@ -1,5 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
 using Pinger.Container;
@@ -7,6 +8,12 @@ using Pinger.Container;
 namespace Pinger {
 	public class ViewModel : BindableBase {
 		public ObservableCollection<PingSite> Sites {get; set;}
+
+		private PingSite _selectedSite;
+		public PingSite SelectedSite {
+			get => _selectedSite;
+			set => SetProperty(ref _selectedSite, value);
+		}
 
 		public CommandHandler CommandRefresh {get; set;}
 		public CommandHandler CommandAdd {get; set;}
@@ -58,8 +65,10 @@ namespace Pinger {
 			);
 
 			// If we have any pre-loaded sites trigger an initial refresh
-			if (Sites.Count > 0)
+			if (Sites.Count > 0) {
+				SelectedSite = Sites.First();
 				RefreshSites();
+			}
 		}
 
 		private void SetTimerDelay() {
