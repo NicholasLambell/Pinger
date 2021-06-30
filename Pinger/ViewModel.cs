@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
 using Pinger.Container;
+using Pinger.DataController;
 
 namespace Pinger {
 	public class ViewModel : BindableBase {
@@ -15,12 +16,18 @@ namespace Pinger {
 			set => SetProperty(ref _selectedSite, value);
 		}
 
-		public CommandHandler CommandRefresh {get; set;}
 		public CommandHandler CommandAdd {get; set;}
 		public CommandHandler CommandRemove {get; set;}
 		public CommandHandler CommandSiteNameSubmit {get; set;}
+		public CommandHandler CommandSelectedSiteChanged { get; set; }
 
 		public DispatcherTimer RefreshTimer {get; set;}
+
+		private ChartSeriesController _chartSeriesController;
+		public ChartSeriesController ChartSeriesController {
+			get => _chartSeriesController;
+			set => SetProperty(ref _chartSeriesController, value);
+		}
 
 		private int _refreshDelay;
 		public int RefreshDelay {
@@ -39,18 +46,15 @@ namespace Pinger {
 
 		public ViewModel() {
 			Sites = new ObservableCollection<PingSite>();
-
 			Sites.Add(new PingSite(
 				new Uri("https://www.google.com")
 			));
 
+			ChartSeriesController = new ChartSeriesController();
+
 			RefreshTimer = new DispatcherTimer();
 			RefreshTimer.Tick += RefreshTimer_Tick;
 			RefreshDelay = 2;
-
-			CommandRefresh = new CommandHandler(
-				BtnRefresh_Clicked
-			);
 
 			CommandAdd = new CommandHandler(
 				AddSite
@@ -63,6 +67,7 @@ namespace Pinger {
 			CommandRemove = new CommandHandler(
 				BtnRemove_Clicked
 			);
+			CommandSelectedSiteChanged = new CommandHandler(LstSites_SelectionChanged);
 
 			// If we have any pre-loaded sites trigger an initial refresh
 			if (Sites.Count > 0) {
@@ -81,17 +86,27 @@ namespace Pinger {
 			RefreshTimer.Start();
 		}
 
-		private void RefreshSites() {
-			foreach (PingSite site in Sites) {
-				site.Refresh();
+		private async void RefreshSite(PingSite site) {
+			await site.Refresh();
+
+			if (site == SelectedSite) {
+				ChartSeriesController.AddPoint(site.Ping);
 			}
 		}
 
-		private void RefreshTimer_Tick(object sender, EventArgs e) {
-			RefreshSites();
+		private void RefreshSites() {
+			foreach (PingSite site in Sites) {
+				RefreshSite(site);
+			}
 		}
 
-		private void BtnRefresh_Clicked(object param) {
+		private void UpdateChartSeriesFromSite(PingSite site) {
+			int[] pingTimes = site.PingHistory.Select(x => x.Ping).ToArray();
+
+			ChartSeriesController.PopulateFromArray(pingTimes);
+		}
+
+		private void RefreshTimer_Tick(object sender, EventArgs e) {
 			RefreshSites();
 		}
 
@@ -127,6 +142,14 @@ namespace Pinger {
 
 			if (confirmResult == MessageBoxResult.Yes)
 				Sites.Remove(site);
+		}
+
+		private void LstSites_SelectionChanged(object param) {
+			if (!(param is PingSite site)) {
+				return;
+			}
+
+			UpdateChartSeriesFromSite(site);
 		}
 	}
 }

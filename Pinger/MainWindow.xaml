@@ -5,6 +5,7 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:local="clr-namespace:Pinger"
+	xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
 	xmlns:dd="urn:gong-wpf-dragdrop"
 	xmlns:converter="clr-namespace:Pinger.Converter"
 	xmlns:control="clr-namespace:Pinger.Control"
@@ -91,153 +92,177 @@
 			</Grid>
 		</Grid>
 
-		<Grid>
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="2*" />
-				<ColumnDefinition Width="*" />
-			</Grid.ColumnDefinitions>
-
-			<ListBox
-				ItemsSource="{Binding Sites}"
-				SelectedItem="{ Binding SelectedSite }"
-				dd:DragDrop.IsDragSource="True"
-				dd:DragDrop.IsDropTarget="True"
-				Grid.Column="0"
+		<DockPanel>
+			<Expander
+				Header="History Graph"
+				ExpandDirection="Down"
+				IsExpanded="False"
+				DockPanel.Dock="Top"
 			>
-				<ListBox.ItemContainerStyle>
-					<Style TargetType="ListBoxItem">
-						<Setter Property="Padding" Value="5" />
-						<Setter Property="HorizontalContentAlignment" Value="Stretch" />
-					</Style>
-				</ListBox.ItemContainerStyle>
-				<ListBox.ItemTemplate>
-					<DataTemplate>
-						<Grid>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="Auto" />
-								<ColumnDefinition Width="Auto" />
-								<ColumnDefinition Width="*" />
-								<ColumnDefinition Width="Auto" />
-								<ColumnDefinition Width="Auto" />
-							</Grid.ColumnDefinitions>
+				<control:HistoryGraph
+					GraphCollection="{ Binding
+						RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}},
+						Path=DataContext.ChartSeriesController.SeriesCollection
+					}"
+				/>
+			</Expander>
 
-							<Rectangle
-								MinWidth="50"
-								ToolTip="{Binding StatusMessage}"
-								Fill="{Binding Status, Converter={StaticResource PingStatusToColor}}"
-								Grid.Column="0"
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="2*" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+
+				<ListBox
+					ItemsSource="{Binding Sites}"
+					SelectedItem="{ Binding SelectedSite }"
+					dd:DragDrop.IsDragSource="True"
+					dd:DragDrop.IsDropTarget="True"
+					Grid.Column="0"
+				>
+					<behaviors:Interaction.Triggers>
+						<behaviors:EventTrigger EventName="SelectionChanged">
+							<behaviors:InvokeCommandAction
+								Command="{Binding CommandSelectedSiteChanged}"
+								CommandParameter="{ Binding Path=SelectedItem, RelativeSource={RelativeSource AncestorType={x:Type ListBox}} }"
 							/>
-
-							<Rectangle
-								VerticalAlignment="Stretch"
-								Width="3"
-								Margin="3,0"
-								Fill="Gainsboro"
-								Grid.Column="1"
-							/>
-
-							<Grid
-								Grid.Column="2"
-							>
-								<Grid.RowDefinitions>
-									<RowDefinition Height="*" />
-									<RowDefinition Height="*" />
-								</Grid.RowDefinitions>
-
+						</behaviors:EventTrigger>
+					</behaviors:Interaction.Triggers>
+					<ListBox.ItemContainerStyle>
+						<Style TargetType="ListBoxItem">
+							<Setter Property="Padding" Value="5" />
+							<Setter Property="HorizontalContentAlignment" Value="Stretch" />
+						</Style>
+					</ListBox.ItemContainerStyle>
+					<ListBox.ItemTemplate>
+						<DataTemplate>
+							<Grid>
 								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="Auto" />
+									<ColumnDefinition Width="Auto" />
+									<ColumnDefinition Width="*" />
+									<ColumnDefinition Width="Auto" />
+									<ColumnDefinition Width="Auto" />
+								</Grid.ColumnDefinitions>
+
+								<Rectangle
+									MinWidth="50"
+									ToolTip="{Binding StatusMessage}"
+									Fill="{Binding Status, Converter={StaticResource PingStatusToColor}}"
+									Grid.Column="0"
+								/>
+
+								<Rectangle
+									VerticalAlignment="Stretch"
+									Width="3"
+									Margin="3,0"
+									Fill="Gainsboro"
+									Grid.Column="1"
+								/>
+
+								<Grid
+									Grid.Column="2"
+								>
+									<Grid.RowDefinitions>
+										<RowDefinition Height="*" />
+										<RowDefinition Height="*" />
+									</Grid.RowDefinitions>
+
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="Auto" />
+										<ColumnDefinition Width="*" />
+									</Grid.ColumnDefinitions>
+
+									<TextBlock
+										Text="Site"
+										Margin="0,0,10,0"
+										Grid.Row="0"
+										Grid.Column="0"
+									/>
+									<TextBlock
+										Text="{Binding Location.AbsoluteUri}"
+										Grid.Row="0"
+										Grid.Column="1"
+									/>
+
+									<TextBlock
+										Text="Ping"
+										Margin="0,0,10,0"
+										Grid.Row="1"
+										Grid.Column="0"
+									/>
+									<TextBlock
+										Text="{Binding Ping, StringFormat={}{0}ms}"
+										Grid.Row="1"
+										Grid.Column="1"
+									/>
+								</Grid>
+
+								<Rectangle
+									VerticalAlignment="Stretch"
+									Width="3"
+									Margin="3,0"
+									Fill="Gainsboro"
+									Grid.Column="3"
+								/>
+
+								<control:RemoveButton
+									Command="{ Binding
+										RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}},
+										Path=DataContext.CommandRemove
+									}"
+									CommandParameter="{ Binding }"
+									Grid.Column="4"
+								/>
+							</Grid>
+						</DataTemplate>
+					</ListBox.ItemTemplate>
+				</ListBox>
+
+
+				<ListBox
+					ItemsSource="{ Binding SelectedSite.PingHistory }"
+					Grid.Column="1"
+				>
+					<ListBox.ItemContainerStyle>
+						<Style TargetType="ListBoxItem">
+							<Setter Property="Padding" Value="5,2,20,2" />
+							<Setter Property="HorizontalContentAlignment" Value="Stretch" />
+						</Style>
+					</ListBox.ItemContainerStyle>
+					<ListBox.ItemTemplate>
+						<DataTemplate>
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="Auto" />
 									<ColumnDefinition Width="Auto" />
 									<ColumnDefinition Width="*" />
 								</Grid.ColumnDefinitions>
 
-								<TextBlock
-									Text="Site"
-									Margin="0,0,10,0"
-									Grid.Row="0"
+								<Rectangle
+									MinWidth="30"
+									ToolTip="{Binding StatusMessage}"
+									Fill="{Binding Status, Converter={StaticResource PingStatusToColor}}"
 									Grid.Column="0"
 								/>
-								<TextBlock
-									Text="{Binding Location.AbsoluteUri}"
-									Grid.Row="0"
+
+								<Rectangle
+									VerticalAlignment="Stretch"
+									Width="3"
+									Margin="3,0"
+									Fill="Gainsboro"
 									Grid.Column="1"
 								/>
 
-								<TextBlock
-									Text="Ping"
-									Margin="0,0,10,0"
-									Grid.Row="1"
-									Grid.Column="0"
-								/>
 								<TextBlock
 									Text="{Binding Ping, StringFormat={}{0}ms}"
-									Grid.Row="1"
-									Grid.Column="1"
+									Grid.Column="2"
 								/>
 							</Grid>
-
-							<Rectangle
-								VerticalAlignment="Stretch"
-								Width="3"
-								Margin="3,0"
-								Fill="Gainsboro"
-								Grid.Column="3"
-							/>
-
-							<control:RemoveButton
-								Command="{ Binding
-									RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}},
-									Path=DataContext.CommandRemove
-								}"
-								CommandParameter="{ Binding }"
-								Grid.Column="4"
-							/>
-						</Grid>
-					</DataTemplate>
-				</ListBox.ItemTemplate>
-			</ListBox>
-
-
-			<ListBox
-				ItemsSource="{ Binding SelectedSite.PingHistory }"
-				Grid.Column="1"
-			>
-				<ListBox.ItemContainerStyle>
-					<Style TargetType="ListBoxItem">
-						<Setter Property="Padding" Value="5,2,20,2" />
-						<Setter Property="HorizontalContentAlignment" Value="Stretch" />
-					</Style>
-				</ListBox.ItemContainerStyle>
-				<ListBox.ItemTemplate>
-					<DataTemplate>
-						<Grid>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="Auto" />
-								<ColumnDefinition Width="Auto" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
-
-							<Rectangle
-								MinWidth="30"
-								ToolTip="{Binding StatusMessage}"
-								Fill="{Binding Status, Converter={StaticResource PingStatusToColor}}"
-								Grid.Column="0"
-							/>
-
-							<Rectangle
-								VerticalAlignment="Stretch"
-								Width="3"
-								Margin="3,0"
-								Fill="Gainsboro"
-								Grid.Column="1"
-							/>
-
-							<TextBlock
-								Text="{Binding Ping, StringFormat={}{0}ms}"
-								Grid.Column="2"
-							/>
-						</Grid>
-					</DataTemplate>
-				</ListBox.ItemTemplate>
-			</ListBox>
-		</Grid>
+						</DataTemplate>
+					</ListBox.ItemTemplate>
+				</ListBox>
+			</Grid>
+		</DockPanel>
 	</DockPanel>
 </Window>

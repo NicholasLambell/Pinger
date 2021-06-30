@@ -1,8 +1,7 @@
 using System;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Net.NetworkInformation;
-using System.Windows;
+using System.Threading.Tasks;
 using Pinger.Enum;
 
 namespace Pinger.Container {
@@ -73,7 +72,7 @@ namespace Pinger.Container {
 			}
 		}
 
-		public async void Refresh() {
+		public async Task Refresh() {
 			if (Refreshing)
 				return;
 

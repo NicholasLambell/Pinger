@@ -8,7 +8,7 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>Pinger</RootNamespace>
     <AssemblyName>Pinger</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -37,6 +37,18 @@
   <ItemGroup>
     <Reference Include="GongSolutions.WPF.DragDrop, Version=2.0.0.0, Culture=neutral, PublicKeyToken=91f1945125b7a587">
       <HintPath>..\packages\gong-wpf-dragdrop.2.0.3\lib\net46\GongSolutions.WPF.DragDrop.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="LiveCharts, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df">
+      <HintPath>..\packages\LiveCharts.0.9.7\lib\net45\LiveCharts.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="LiveCharts.Wpf, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df">
+      <HintPath>..\packages\LiveCharts.Wpf.0.9.7\lib\net45\LiveCharts.Wpf.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Xaml.Behaviors, Version=1.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <HintPath>..\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.31\lib\net45\Microsoft.Xaml.Behaviors.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -79,13 +91,19 @@
     <Compile Include="CommandHandler.cs" />
     <Compile Include="Container\PingSite.cs" />
     <Compile Include="Container\PingSiteHistory.cs" />
+    <Compile Include="Control\HistoryGraph.xaml.cs">
+      <DependentUpon>HistoryGraph.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Control\RemoveButton.xaml.cs">
       <DependentUpon>RemoveButton.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converter\PingStatusToColor.cs" />
+    <Compile Include="DataController\ChartSeriesController.cs" />
     <Compile Include="Enum\PingStatus.cs" />
+    <Compile Include="Extensions\ArrayExtensions.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="ViewModel.cs" />
+    <Page Include="Control\HistoryGraph.xaml" />
     <Page Include="Control\RemoveButton.xaml" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
