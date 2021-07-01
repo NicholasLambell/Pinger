@@ -98,6 +98,7 @@
       <DependentUpon>RemoveButton.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converter\PingStatusToColor.cs" />
+    <Compile Include="Converter\PingTimeoutToString.cs" />
     <Compile Include="DataController\ChartSeriesController.cs" />
     <Compile Include="Enum\PingStatus.cs" />
     <Compile Include="Extensions\ArrayExtensions.cs" />

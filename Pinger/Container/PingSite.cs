@@ -54,15 +54,20 @@ namespace Pinger.Container {
 			PingHistory = new ObservableCollection<PingSiteHistory>();
 		}
 
-		private void RecordHistory() {
-			PingHistory.Insert(
-				0,
-				new PingSiteHistory(
-					Ping,
-					Status,
-					StatusMessage
-				)
-			);
+		private static PingStatus PingTimeToStatus(int pingTime) {
+			if (pingTime < 100) {
+				return PingStatus.Success;
+			}
+
+			if (pingTime < 200) {
+				return PingStatus.Warning;
+			}
+
+			return PingStatus.Critical;
+		}
+
+		private void RecordHistory(PingSiteHistory history) {
+			PingHistory.Insert(0, history);
 
 			if (PingHistory.Count <= 100)
 				return;
@@ -72,40 +77,41 @@ namespace Pinger.Container {
 			}
 		}
 
+		private async Task<PingSiteHistory> SendPing() {
+			try {
+				using (Ping ping = new Ping()) {
+					PingReply reply = await ping.SendPingAsync(Location.Host);
+
+					if (reply == null) {
+						return new PingSiteHistory(0, PingStatus.Fail);
+					}
+
+					int pingTime = (int)reply.RoundtripTime;
+					if (reply.Status == IPStatus.TimedOut) {
+						return new PingSiteHistory(pingTime, PingStatus.Timeout);
+					}
+
+					return new PingSiteHistory(pingTime, PingTimeToStatus(pingTime));
+				}
+			} catch {
+				// ignored
+			}
+
+			return new PingSiteHistory(0, PingStatus.Fail);
+		}
+
 		public async Task Refresh() {
 			if (Refreshing)
 				return;
 
 			Refreshing = true;
 
-			int targetPing = 0;
-			PingStatus pingStatus = PingStatus.Fail;
+			PingSiteHistory pingResult = await SendPing();
 
-			try {
-				using (Ping ping = new Ping()) {
-					PingReply reply = await ping.SendPingAsync(Location.Host);
+			Ping = pingResult.Ping;
+			Status = pingResult.Status;
 
-					if (
-						reply != null &&
-						reply.Status == IPStatus.Success
-					) {
-						targetPing = (int)reply.RoundtripTime;
-
-						pingStatus = PingStatus.Success;
-						if (targetPing >= 200) {
-							pingStatus = PingStatus.Critical;
-						} else if (targetPing >= 100) {
-							pingStatus = PingStatus.Warning;
-						}
-					}
-				}
-			} catch {
-				// Nothing
-			}
-
-			Ping = targetPing;
-			Status = pingStatus;
-			RecordHistory();
+			RecordHistory(pingResult);
 
 			Refreshing = false;
 		}

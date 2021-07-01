@@ -8,26 +8,41 @@ namespace Pinger.Enum {
 		Success,
 		Warning,
 		Critical,
-		Fail
+		Fail,
+		Timeout
 	}
 
 	static class PingStatusExtensions {
+		public static bool ShowStatusMessage(this PingStatus status) {
+			// ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
+			switch (status) {
+				case PingStatus.None:
+				case PingStatus.Fail:
+				case PingStatus.Timeout:
+					return true;
+				default:
+					return false;
+			}
+		}
+
 		public static string StatusMessage(this PingStatus status) {
 			switch (status) {
 				case PingStatus.None:
-					return "Site not pinged";
+					return "Not Pinged";
 				case PingStatus.Pinging:
-					return "Currently pinging site";
+					return "Currently Pinging";
 				case PingStatus.Success:
-					return "Site responded within 100ms";
+					return "Responded Within 100ms";
 				case PingStatus.Warning:
-					return "Site responded within 200ms";
+					return "Responded Within 200ms";
 				case PingStatus.Critical:
-					return "Site took longer than 200ms to respond";
+					return "Took Longer Than 200ms To Respond";
 				case PingStatus.Fail:
-					return "Site failed to respond";
+					return "No Response";
+				case PingStatus.Timeout:
+					return "Timed Out";
 				default:
-					throw new ArgumentOutOfRangeException("status");
+					throw new ArgumentOutOfRangeException(nameof(status));
 			}
 		}
 
@@ -43,9 +58,10 @@ namespace Pinger.Enum {
 				case PingStatus.Critical:
 					return Colors.Orange;
 				case PingStatus.Fail:
+				case PingStatus.Timeout:
 					return Colors.DarkRed;
 				default:
-					throw new ArgumentOutOfRangeException("status");
+					throw new ArgumentOutOfRangeException(nameof(status));
 			}
 		}
 	}

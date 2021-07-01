@@ -20,6 +20,7 @@
 >
 	<Window.Resources>
 		<converter:PingStatusToColor x:Key="PingStatusToColor" />
+		<converter:PingTimeoutToString x:Key="PingTimeoutToString" />
 	</Window.Resources>
 	<DockPanel>
 		<Grid
@@ -192,10 +193,16 @@
 										Grid.Column="0"
 									/>
 									<TextBlock
-										Text="{Binding Ping, StringFormat={}{0}ms}"
 										Grid.Row="1"
 										Grid.Column="1"
-									/>
+									>
+										<TextBlock.Text>
+											<MultiBinding Converter="{StaticResource PingTimeoutToString}">
+												<Binding Path="Ping" />
+												<Binding Path="Status" />
+											</MultiBinding>
+										</TextBlock.Text>
+									</TextBlock>
 								</Grid>
 
 								<Rectangle
@@ -255,9 +262,15 @@
 								/>
 
 								<TextBlock
-									Text="{Binding Ping, StringFormat={}{0}ms}"
 									Grid.Column="2"
-								/>
+								>
+									<TextBlock.Text>
+										<MultiBinding Converter="{StaticResource PingTimeoutToString}">
+											<Binding Path="Ping" />
+											<Binding Path="Status" />
+										</MultiBinding>
+									</TextBlock.Text>
+								</TextBlock>
 							</Grid>
 						</DataTemplate>
 					</ListBox.ItemTemplate>

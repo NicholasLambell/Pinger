@@ -6,10 +6,10 @@ namespace Pinger.Container {
 		public PingStatus Status {get; set;}
 		public string StatusMessage {get; set;}
 
-		public PingSiteHistory(int ping,PingStatus status,string statusMessage) {
+		public PingSiteHistory(int ping, PingStatus status) {
 			Ping = ping;
 			Status = status;
-			StatusMessage = statusMessage;
+			StatusMessage = status.StatusMessage();
 		}
 	}
 }
