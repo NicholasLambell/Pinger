@@ -12,9 +12,10 @@
 	xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
 	mc:Ignorable="d"
 	Title="Pinger"
-	Height="400"
+	MinHeight="140"
 	MinWidth="450"
-	SizeToContent="Width"
+	Height="400"
+	Width="600"
 	WindowStartupLocation="CenterScreen"
 	DataContext="{Binding Path=ViewModel, RelativeSource={RelativeSource Self}}"
 >
