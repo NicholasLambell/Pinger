@@ -56,11 +56,8 @@
 				/>
 			</Grid>
 
-			<Rectangle
-				VerticalAlignment="Stretch"
-				Width="3"
-				Margin="5,0"
-				Fill="Gainsboro"
+			<control:VerticalDivider
+				Margin="5, 0"
 				Grid.Column="1"
 			/>
 
@@ -154,11 +151,8 @@
 									Grid.Column="0"
 								/>
 
-								<Rectangle
-									VerticalAlignment="Stretch"
-									Width="3"
-									Margin="3,0"
-									Fill="Gainsboro"
+								<control:VerticalDivider
+									Margin="3, 0"
 									Grid.Column="1"
 								/>
 
@@ -206,11 +200,8 @@
 									</TextBlock>
 								</Grid>
 
-								<Rectangle
-									VerticalAlignment="Stretch"
-									Width="3"
-									Margin="3,0"
-									Fill="Gainsboro"
+								<control:VerticalDivider
+									Margin="3, 0"
 									Grid.Column="3"
 								/>
 
@@ -254,11 +245,8 @@
 									Grid.Column="0"
 								/>
 
-								<Rectangle
-									VerticalAlignment="Stretch"
-									Width="3"
-									Margin="3,0"
-									Fill="Gainsboro"
+								<control:VerticalDivider
+									Margin="3, 0"
 									Grid.Column="1"
 								/>
 

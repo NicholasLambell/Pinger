@@ -97,6 +97,9 @@
     <Compile Include="Control\RemoveButton.xaml.cs">
       <DependentUpon>RemoveButton.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Control\VerticalDivider.xaml.cs">
+      <DependentUpon>VerticalDivider.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Converter\PingStatusToColor.cs" />
     <Compile Include="Converter\PingTimeoutToString.cs" />
     <Compile Include="DataController\ChartSeriesController.cs" />
@@ -106,6 +109,7 @@
     <Compile Include="ViewModel.cs" />
     <Page Include="Control\HistoryGraph.xaml" />
     <Page Include="Control\RemoveButton.xaml" />
+    <Page Include="Control\VerticalDivider.xaml" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
