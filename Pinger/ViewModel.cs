@@ -150,8 +150,8 @@ namespace Pinger {
 				return;
 
 			MessageBoxResult confirmResult = MessageBox.Show(
-				"Do you really want to delete this Site?",
-				"Confirm Deletion",
+				"Do you really want to remove this Site?",
+				"Confirm Removal",
 				MessageBoxButton.YesNo
 			);
 

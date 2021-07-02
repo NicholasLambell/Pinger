@@ -13,7 +13,7 @@
 	mc:Ignorable="d"
 	Title="Pinger"
 	MinHeight="140"
-	MinWidth="450"
+	MinWidth="540"
 	Height="400"
 	Width="600"
 	WindowStartupLocation="CenterScreen"
@@ -41,10 +41,12 @@
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="Auto" />
 					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="Auto" />
 				</Grid.ColumnDefinitions>
 
 				<TextBlock
-					Text="Refresh Interval: "
+					Text="Refresh Time:"
+					Margin="0, 0, 5, 0"
 					VerticalAlignment="Center"
 					Grid.Column="0"
 				/>
@@ -53,6 +55,12 @@
 					Minimum="1"
 					Value="{ Binding RefreshDelay }"
 					Grid.Column="1"
+				/>
+
+				<TextBlock
+					Text="Seconds"
+					Margin="5, 0, 0, 0"
+					Grid.Column="2"
 				/>
 			</Grid>
 
