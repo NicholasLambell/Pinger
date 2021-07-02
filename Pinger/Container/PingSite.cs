@@ -5,115 +5,117 @@ using System.Threading.Tasks;
 using Pinger.Enum;
 
 namespace Pinger.Container {
-	public class PingSite:BindableBase {
-		#region Props
+    public class PingSite : BindableBase {
+        #region Props
 
-		public ObservableCollection<PingSiteHistory> PingHistory {get; set;}
+        public ObservableCollection<PingSiteHistory> PingHistory { get; set; }
 
-		private Uri _location;
-		public Uri Location {
-			get => _location;
-			set => SetProperty(ref _location, value);
-		}
+        private Uri _location;
+        public Uri Location {
+            get => _location;
+            set => SetProperty(ref _location, value);
+        }
 
-		private int _ping;
-		public int Ping {
-			get => _ping;
-			set => SetProperty(ref _ping, value);
-		}
+        private int _ping;
+        public int Ping {
+            get => _ping;
+            set => SetProperty(ref _ping, value);
+        }
 
-		private PingStatus _status;
-		public PingStatus Status {
-			get => _status;
-			set {
-				SetProperty(ref _status, value);
+        private PingStatus _status;
+        public PingStatus Status {
+            get => _status;
+            set {
+                SetProperty(ref _status, value);
 
-				// Update status message
-				SetProperty(
-					ref _statusMessage,
-					Status.StatusMessage(),
-					nameof(StatusMessage)
-				);
-			}
-		}
+                // Update status message
+                SetProperty(
+                    ref _statusMessage,
+                    Status.StatusMessage(),
+                    nameof(StatusMessage)
+                );
+            }
+        }
 
-		private string _statusMessage;
-		public string StatusMessage {
-			get => _statusMessage;
-			set => SetProperty(ref _statusMessage, value);
-		}
+        private string _statusMessage;
+        public string StatusMessage {
+            get => _statusMessage;
+            set => SetProperty(ref _statusMessage, value);
+        }
 
-		public bool Refreshing {get; set;}
+        public bool Refreshing { get; set; }
 
-		#endregion
+        #endregion
 
-		public PingSite(Uri location) {
-			Location = location;
-			Ping = 0;
-			Status = PingStatus.None;
-			PingHistory = new ObservableCollection<PingSiteHistory>();
-		}
+        public PingSite(Uri location) {
+            Location = location;
+            Ping = 0;
+            Status = PingStatus.None;
+            PingHistory = new ObservableCollection<PingSiteHistory>();
+        }
 
-		private static PingStatus PingTimeToStatus(int pingTime) {
-			if (pingTime < 100) {
-				return PingStatus.Success;
-			}
+        private static PingStatus PingTimeToStatus(int pingTime) {
+            if (pingTime < 100) {
+                return PingStatus.Success;
+            }
 
-			if (pingTime < 200) {
-				return PingStatus.Warning;
-			}
+            if (pingTime < 200) {
+                return PingStatus.Warning;
+            }
 
-			return PingStatus.Critical;
-		}
+            return PingStatus.Critical;
+        }
 
-		private void RecordHistory(PingSiteHistory history) {
-			PingHistory.Insert(0, history);
+        private void RecordHistory(PingSiteHistory history) {
+            PingHistory.Insert(0, history);
 
-			if (PingHistory.Count <= 100)
-				return;
+            if (PingHistory.Count <= 100) {
+                return;
+            }
 
-			for (int i = 100; i < PingHistory.Count; i++) {
-				PingHistory.RemoveAt(i);
-			}
-		}
+            for (int i = 100; i < PingHistory.Count; i++) {
+                PingHistory.RemoveAt(i);
+            }
+        }
 
-		private async Task<PingSiteHistory> SendPing() {
-			try {
-				using (Ping ping = new Ping()) {
-					PingReply reply = await ping.SendPingAsync(Location.Host);
+        private async Task<PingSiteHistory> SendPing() {
+            try {
+                using (Ping ping = new Ping()) {
+                    PingReply reply = await ping.SendPingAsync(Location.Host);
 
-					if (reply == null) {
-						return new PingSiteHistory(0, PingStatus.Fail);
-					}
+                    if (reply == null) {
+                        return new PingSiteHistory(0, PingStatus.Fail);
+                    }
 
-					int pingTime = (int)reply.RoundtripTime;
-					if (reply.Status == IPStatus.TimedOut) {
-						return new PingSiteHistory(pingTime, PingStatus.Timeout);
-					}
+                    int pingTime = (int)reply.RoundtripTime;
+                    if (reply.Status == IPStatus.TimedOut) {
+                        return new PingSiteHistory(pingTime, PingStatus.Timeout);
+                    }
 
-					return new PingSiteHistory(pingTime, PingTimeToStatus(pingTime));
-				}
-			} catch {
-				// ignored
-			}
+                    return new PingSiteHistory(pingTime, PingTimeToStatus(pingTime));
+                }
+            } catch {
+                // ignored
+            }
 
-			return new PingSiteHistory(0, PingStatus.Fail);
-		}
+            return new PingSiteHistory(0, PingStatus.Fail);
+        }
 
-		public async Task Refresh() {
-			if (Refreshing)
-				return;
+        public async Task Refresh() {
+            if (Refreshing) {
+                return;
+            }
 
-			Refreshing = true;
+            Refreshing = true;
 
-			PingSiteHistory pingResult = await SendPing();
+            PingSiteHistory pingResult = await SendPing();
 
-			Ping = pingResult.Ping;
-			Status = pingResult.Status;
+            Ping = pingResult.Ping;
+            Status = pingResult.Status;
 
-			RecordHistory(pingResult);
+            RecordHistory(pingResult);
 
-			Refreshing = false;
-		}
-	}
+            Refreshing = false;
+        }
+    }
 }
