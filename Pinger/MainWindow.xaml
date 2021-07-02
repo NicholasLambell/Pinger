@@ -1,278 +1,278 @@
 ﻿<Window
-	x:Class="Pinger.MainWindow"
-	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:local="clr-namespace:Pinger"
-	xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
-	xmlns:dd="urn:gong-wpf-dragdrop"
-	xmlns:converter="clr-namespace:Pinger.Converter"
-	xmlns:control="clr-namespace:Pinger.Control"
-	xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-	mc:Ignorable="d"
-	Title="Pinger"
-	MinHeight="140"
-	MinWidth="540"
-	Height="400"
-	Width="600"
-	WindowStartupLocation="CenterScreen"
-	DataContext="{Binding Path=ViewModel, RelativeSource={RelativeSource Self}}"
+    x:Class="Pinger.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:Pinger"
+    xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:dd="urn:gong-wpf-dragdrop"
+    xmlns:converter="clr-namespace:Pinger.Converter"
+    xmlns:control="clr-namespace:Pinger.Control"
+    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+    mc:Ignorable="d"
+    Title="Pinger"
+    MinHeight="140"
+    MinWidth="540"
+    Height="400"
+    Width="600"
+    WindowStartupLocation="CenterScreen"
+    DataContext="{Binding Path=ViewModel, RelativeSource={RelativeSource Self}}"
 >
-	<Window.Resources>
-		<converter:PingStatusToColor x:Key="PingStatusToColor" />
-		<converter:PingTimeoutToString x:Key="PingTimeoutToString" />
-	</Window.Resources>
-	<DockPanel>
-		<Grid
-			Margin="5"
-			DockPanel.Dock="Top"
-		>
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="*"/>
-				<ColumnDefinition Width="Auto"/>
-				<ColumnDefinition Width="2*"/>
-			</Grid.ColumnDefinitions>
+    <Window.Resources>
+        <converter:PingStatusToColor x:Key="PingStatusToColor" />
+        <converter:PingTimeoutToString x:Key="PingTimeoutToString" />
+    </Window.Resources>
+    <DockPanel>
+        <Grid
+            Margin="5"
+            DockPanel.Dock="Top"
+        >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
 
 
-			<Grid
-				Grid.Column="0"
-			>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="Auto" />
-					<ColumnDefinition Width="*" />
-					<ColumnDefinition Width="Auto" />
-				</Grid.ColumnDefinitions>
+            <Grid
+                Grid.Column="0"
+            >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
 
-				<TextBlock
-					Text="Refresh Time:"
-					Margin="0, 0, 5, 0"
-					VerticalAlignment="Center"
-					Grid.Column="0"
-				/>
+                <TextBlock
+                    Text="Refresh Time:"
+                    Margin="0, 0, 5, 0"
+                    VerticalAlignment="Center"
+                    Grid.Column="0"
+                />
 
-				<xctk:IntegerUpDown
-					Minimum="1"
-					Value="{ Binding RefreshDelay }"
-					Grid.Column="1"
-				/>
+                <xctk:IntegerUpDown
+                    Minimum="1"
+                    Value="{ Binding RefreshDelay }"
+                    Grid.Column="1"
+                />
 
-				<TextBlock
-					Text="Seconds"
-					Margin="5, 0, 0, 0"
-					Grid.Column="2"
-				/>
-			</Grid>
+                <TextBlock
+                    Text="Seconds"
+                    Margin="5, 0, 0, 0"
+                    Grid.Column="2"
+                />
+            </Grid>
 
-			<control:VerticalDivider
-				Margin="5, 0"
-				Grid.Column="1"
-			/>
+            <control:VerticalDivider
+                Margin="5, 0"
+                Grid.Column="1"
+            />
 
-			<Grid
-				Grid.Column="2"
-			>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="*" />
-					<ColumnDefinition Width="Auto" />
-				</Grid.ColumnDefinitions>
+            <Grid
+                Grid.Column="2"
+            >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
 
-				<TextBox
-					Text="{Binding SiteName}"
-					Grid.Column="0"
-				>
-					<TextBox.InputBindings>
-						<KeyBinding
-							Key="Enter"
-							Command="{ Binding CommandSiteNameSubmit }"
-							CommandParameter="{ Binding Path=Text, RelativeSource={RelativeSource AncestorType={x:Type TextBox}} }"
-						/>
-					</TextBox.InputBindings>
-				</TextBox>
+                <TextBox
+                    Text="{Binding SiteName}"
+                    Grid.Column="0"
+                >
+                    <TextBox.InputBindings>
+                        <KeyBinding
+                            Key="Enter"
+                            Command="{ Binding CommandSiteNameSubmit }"
+                            CommandParameter="{ Binding Path=Text, RelativeSource={RelativeSource AncestorType={x:Type TextBox}} }"
+                        />
+                    </TextBox.InputBindings>
+                </TextBox>
 
-				<Button
-					Content="Add Site"
-					Padding="10,0"
-					Command="{Binding CommandAdd}"
-					Grid.Column="1"
-				/>
-			</Grid>
-		</Grid>
+                <Button
+                    Content="Add Site"
+                    Padding="10,0"
+                    Command="{Binding CommandAdd}"
+                    Grid.Column="1"
+                />
+            </Grid>
+        </Grid>
 
-		<DockPanel>
-			<Expander
-				Header="History Graph"
-				ExpandDirection="Down"
-				IsExpanded="False"
-				DockPanel.Dock="Top"
-			>
-				<control:HistoryGraph
-					GraphCollection="{ Binding
-						RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}},
-						Path=DataContext.ChartSeriesController.SeriesCollection
-					}"
-				/>
-			</Expander>
+        <DockPanel>
+            <Expander
+                Header="History Graph"
+                ExpandDirection="Down"
+                IsExpanded="False"
+                DockPanel.Dock="Top"
+            >
+                <control:HistoryGraph
+                    GraphCollection="{ Binding
+                        RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}},
+                        Path=DataContext.ChartSeriesController.SeriesCollection
+                    }"
+                />
+            </Expander>
 
-			<Grid>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="2*" />
-					<ColumnDefinition Width="*" />
-				</Grid.ColumnDefinitions>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
 
-				<ListBox
-					ItemsSource="{Binding Sites}"
-					SelectedItem="{ Binding SelectedSite }"
-					dd:DragDrop.IsDragSource="True"
-					dd:DragDrop.IsDropTarget="True"
-					Grid.Column="0"
-				>
-					<behaviors:Interaction.Triggers>
-						<behaviors:EventTrigger EventName="SelectionChanged">
-							<behaviors:InvokeCommandAction
-								Command="{Binding CommandSelectedSiteChanged}"
-								CommandParameter="{ Binding Path=SelectedItem, RelativeSource={RelativeSource AncestorType={x:Type ListBox}} }"
-							/>
-						</behaviors:EventTrigger>
-					</behaviors:Interaction.Triggers>
-					<ListBox.ItemContainerStyle>
-						<Style TargetType="ListBoxItem">
-							<Setter Property="Padding" Value="5" />
-							<Setter Property="HorizontalContentAlignment" Value="Stretch" />
-						</Style>
-					</ListBox.ItemContainerStyle>
-					<ListBox.ItemTemplate>
-						<DataTemplate>
-							<Grid>
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="Auto" />
-									<ColumnDefinition Width="Auto" />
-									<ColumnDefinition Width="*" />
-									<ColumnDefinition Width="Auto" />
-									<ColumnDefinition Width="Auto" />
-								</Grid.ColumnDefinitions>
+                <ListBox
+                    ItemsSource="{Binding Sites}"
+                    SelectedItem="{ Binding SelectedSite }"
+                    dd:DragDrop.IsDragSource="True"
+                    dd:DragDrop.IsDropTarget="True"
+                    Grid.Column="0"
+                >
+                    <behaviors:Interaction.Triggers>
+                        <behaviors:EventTrigger EventName="SelectionChanged">
+                            <behaviors:InvokeCommandAction
+                                Command="{Binding CommandSelectedSiteChanged}"
+                                CommandParameter="{ Binding Path=SelectedItem, RelativeSource={RelativeSource AncestorType={x:Type ListBox}} }"
+                            />
+                        </behaviors:EventTrigger>
+                    </behaviors:Interaction.Triggers>
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="Padding" Value="5" />
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
 
-								<Rectangle
-									MinWidth="50"
-									ToolTip="{Binding StatusMessage}"
-									Fill="{Binding Status, Converter={StaticResource PingStatusToColor}}"
-									Grid.Column="0"
-								/>
+                                <Rectangle
+                                    MinWidth="50"
+                                    ToolTip="{Binding StatusMessage}"
+                                    Fill="{Binding Status, Converter={StaticResource PingStatusToColor}}"
+                                    Grid.Column="0"
+                                />
 
-								<control:VerticalDivider
-									Margin="3, 0"
-									Grid.Column="1"
-								/>
+                                <control:VerticalDivider
+                                    Margin="3, 0"
+                                    Grid.Column="1"
+                                />
 
-								<Grid
-									Grid.Column="2"
-								>
-									<Grid.RowDefinitions>
-										<RowDefinition Height="*" />
-										<RowDefinition Height="*" />
-									</Grid.RowDefinitions>
+                                <Grid
+                                    Grid.Column="2"
+                                >
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
 
-									<Grid.ColumnDefinitions>
-										<ColumnDefinition Width="Auto" />
-										<ColumnDefinition Width="*" />
-									</Grid.ColumnDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
 
-									<TextBlock
-										Text="Site"
-										Margin="0,0,10,0"
-										Grid.Row="0"
-										Grid.Column="0"
-									/>
-									<TextBlock
-										Text="{Binding Location.AbsoluteUri}"
-										Grid.Row="0"
-										Grid.Column="1"
-									/>
+                                    <TextBlock
+                                        Text="Site"
+                                        Margin="0,0,10,0"
+                                        Grid.Row="0"
+                                        Grid.Column="0"
+                                    />
+                                    <TextBlock
+                                        Text="{Binding Location.AbsoluteUri}"
+                                        Grid.Row="0"
+                                        Grid.Column="1"
+                                    />
 
-									<TextBlock
-										Text="Ping"
-										Margin="0,0,10,0"
-										Grid.Row="1"
-										Grid.Column="0"
-									/>
-									<TextBlock
-										Grid.Row="1"
-										Grid.Column="1"
-									>
-										<TextBlock.Text>
-											<MultiBinding Converter="{StaticResource PingTimeoutToString}">
-												<Binding Path="Ping" />
-												<Binding Path="Status" />
-											</MultiBinding>
-										</TextBlock.Text>
-									</TextBlock>
-								</Grid>
+                                    <TextBlock
+                                        Text="Ping"
+                                        Margin="0,0,10,0"
+                                        Grid.Row="1"
+                                        Grid.Column="0"
+                                    />
+                                    <TextBlock
+                                        Grid.Row="1"
+                                        Grid.Column="1"
+                                    >
+                                        <TextBlock.Text>
+                                            <MultiBinding Converter="{StaticResource PingTimeoutToString}">
+                                                <Binding Path="Ping" />
+                                                <Binding Path="Status" />
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                </Grid>
 
-								<control:VerticalDivider
-									Margin="3, 0"
-									Grid.Column="3"
-								/>
+                                <control:VerticalDivider
+                                    Margin="3, 0"
+                                    Grid.Column="3"
+                                />
 
-								<control:RemoveButton
-									Command="{ Binding
-										RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}},
-										Path=DataContext.CommandRemove
-									}"
-									CommandParameter="{ Binding }"
-									Grid.Column="4"
-								/>
-							</Grid>
-						</DataTemplate>
-					</ListBox.ItemTemplate>
-				</ListBox>
+                                <control:RemoveButton
+                                    Command="{ Binding
+                                        RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}},
+                                        Path=DataContext.CommandRemove
+                                    }"
+                                    CommandParameter="{ Binding }"
+                                    Grid.Column="4"
+                                />
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
 
 
-				<ListBox
-					ItemsSource="{ Binding SelectedSite.PingHistory }"
-					Grid.Column="1"
-				>
-					<ListBox.ItemContainerStyle>
-						<Style TargetType="ListBoxItem">
-							<Setter Property="Padding" Value="5,2,20,2" />
-							<Setter Property="HorizontalContentAlignment" Value="Stretch" />
-						</Style>
-					</ListBox.ItemContainerStyle>
-					<ListBox.ItemTemplate>
-						<DataTemplate>
-							<Grid>
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="Auto" />
-									<ColumnDefinition Width="Auto" />
-									<ColumnDefinition Width="*" />
-								</Grid.ColumnDefinitions>
+                <ListBox
+                    ItemsSource="{ Binding SelectedSite.PingHistory }"
+                    Grid.Column="1"
+                >
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="Padding" Value="5,2,20,2" />
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
 
-								<Rectangle
-									MinWidth="30"
-									ToolTip="{Binding StatusMessage}"
-									Fill="{Binding Status, Converter={StaticResource PingStatusToColor}}"
-									Grid.Column="0"
-								/>
+                                <Rectangle
+                                    MinWidth="30"
+                                    ToolTip="{Binding StatusMessage}"
+                                    Fill="{Binding Status, Converter={StaticResource PingStatusToColor}}"
+                                    Grid.Column="0"
+                                />
 
-								<control:VerticalDivider
-									Margin="3, 0"
-									Grid.Column="1"
-								/>
+                                <control:VerticalDivider
+                                    Margin="3, 0"
+                                    Grid.Column="1"
+                                />
 
-								<TextBlock
-									Grid.Column="2"
-								>
-									<TextBlock.Text>
-										<MultiBinding Converter="{StaticResource PingTimeoutToString}">
-											<Binding Path="Ping" />
-											<Binding Path="Status" />
-										</MultiBinding>
-									</TextBlock.Text>
-								</TextBlock>
-							</Grid>
-						</DataTemplate>
-					</ListBox.ItemTemplate>
-				</ListBox>
-			</Grid>
-		</DockPanel>
-	</DockPanel>
+                                <TextBlock
+                                    Grid.Column="2"
+                                >
+                                    <TextBlock.Text>
+                                        <MultiBinding Converter="{StaticResource PingTimeoutToString}">
+                                            <Binding Path="Ping" />
+                                            <Binding Path="Status" />
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+        </DockPanel>
+    </DockPanel>
 </Window>
