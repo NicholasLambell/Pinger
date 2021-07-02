@@ -4,7 +4,7 @@ using LiveCharts;
 
 namespace Pinger.Control {
     public partial class HistoryGraph {
-        public Func<double, string> YFormatter { get; set; }
+        public Func<double, string> YFormatter { get; }
 
         public SeriesCollection GraphCollection {
             get => (SeriesCollection)GetValue(GraphCollectionProperty);

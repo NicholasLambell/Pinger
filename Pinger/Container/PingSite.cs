@@ -8,7 +8,7 @@ namespace Pinger.Container {
     public class PingSite : BindableBase {
         #region Props
 
-        public ObservableCollection<PingSiteHistory> PingHistory { get; set; }
+        public ObservableCollection<PingSiteHistory> PingHistory { get; }
 
         private Uri _location;
         public Uri Location {

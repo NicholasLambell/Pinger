@@ -3,8 +3,10 @@ using System.Windows.Input;
 
 namespace Pinger {
     public class CommandHandler : ICommand {
-        private Action<object> Action { get; set; }
-        private bool AllowExecution { get; set; }
+        private Action<object> Action { get; }
+        private bool AllowExecution { get; }
+
+        public event EventHandler CanExecuteChanged;
 
         public CommandHandler(Action<object> action) : this(action, true) {}
 
@@ -20,7 +22,5 @@ namespace Pinger {
         public void Execute(object parameter) {
             Action(parameter);
         }
-
-        public event EventHandler CanExecuteChanged;
     }
 }

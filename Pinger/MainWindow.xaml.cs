@@ -3,7 +3,7 @@
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow {
-        public ViewModel ViewModel { get; set; }
+        public ViewModel ViewModel { get; }
 
         public MainWindow() {
             ViewModel = new ViewModel();

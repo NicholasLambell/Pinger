@@ -11,7 +11,7 @@ using Pinger.Extensions;
 
 namespace Pinger {
     public class ViewModel : BindableBase {
-        public ObservableCollection<PingSite> Sites { get; set; }
+        public ObservableCollection<PingSite> Sites { get; }
 
         private PingSite _selectedSite;
         public PingSite SelectedSite {
@@ -19,12 +19,12 @@ namespace Pinger {
             set => SetProperty(ref _selectedSite, value);
         }
 
-        public CommandHandler CommandAdd { get; set; }
-        public CommandHandler CommandRemove { get; set; }
-        public CommandHandler CommandSiteNameSubmit { get; set; }
-        public CommandHandler CommandSelectedSiteChanged { get; set; }
+        public CommandHandler CommandAdd { get; }
+        public CommandHandler CommandRemove { get; }
+        public CommandHandler CommandSiteNameSubmit { get; }
+        public CommandHandler CommandSelectedSiteChanged { get; }
 
-        public DispatcherTimer RefreshTimer { get; set; }
+        public DispatcherTimer RefreshTimer { get; }
 
         private ChartSeriesController _chartSeriesController;
         public ChartSeriesController ChartSeriesController {
@@ -37,7 +37,7 @@ namespace Pinger {
             get => _refreshDelay;
             set {
                 _refreshDelay = value;
-                SetTimerDelay();
+                SetTimerDelay(value);
             }
         }
 
@@ -58,9 +58,7 @@ namespace Pinger {
             RefreshDelay = 2;
 
             CommandAdd = new CommandHandler(AddSite);
-
             CommandSiteNameSubmit = new CommandHandler(AddSite);
-
             CommandRemove = new CommandHandler(BtnRemove_Clicked);
             CommandSelectedSiteChanged = new CommandHandler(LstSites_SelectionChanged);
 
@@ -71,13 +69,21 @@ namespace Pinger {
             }
         }
 
-        private void SetTimerDelay() {
-            if (RefreshDelay == 0) {
+        private static Uri SiteStringToUri(string siteName) {
+            try {
+                return new UriBuilder(siteName).Uri;
+            } catch (UriFormatException) {
+                return null;
+            }
+        }
+
+        private void SetTimerDelay(int delay) {
+            if (delay == 0) {
                 RefreshTimer.Stop();
                 return;
             }
 
-            RefreshTimer.Interval = TimeSpan.FromSeconds(RefreshDelay);
+            RefreshTimer.Interval = TimeSpan.FromSeconds(delay);
             RefreshTimer.Start();
         }
 
@@ -93,7 +99,10 @@ namespace Pinger {
         private void UpdateChartSeriesFromSite(PingSite site) {
             ChartSeriesController.Clear();
 
-            IEnumerable<PingSiteHistory> trimmedHistory = site.PingHistory.Reverse().TakeLast(ChartSeriesController.PointCount);
+            IEnumerable<PingSiteHistory> trimmedHistory = site.PingHistory
+                .Reverse()
+                .TakeLast(ChartSeriesController.PointCount);
+
             foreach (PingSiteHistory history in trimmedHistory) {
                 PlotChartPoint(history.Ping, history.Status);
             }
@@ -126,16 +135,14 @@ namespace Pinger {
                 siteName = param.ToString();
             }
 
-            Uri newUri;
-            try {
-                newUri = new UriBuilder(siteName).Uri;
-            } catch (UriFormatException) {
+            Uri siteUri = SiteStringToUri(siteName);
+            if (siteUri == null) {
                 MessageBox.Show("Please enter a valid Site Name");
                 return;
             }
 
             SiteName = string.Empty;
-            Sites.Add(new PingSite(newUri));
+            Sites.Add(new PingSite(siteUri));
         }
 
         private void BtnRemove_Clicked(object param) {
