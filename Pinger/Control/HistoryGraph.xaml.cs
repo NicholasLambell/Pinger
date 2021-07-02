@@ -22,7 +22,7 @@ namespace Pinger.Control {
 		public HistoryGraph() {
 			InitializeComponent();
 
-			YFormatter = value => string.Format("{0} ms", value);
+			YFormatter = value => string.Format("{0:N0}ms", value);
 			DataContext = this;
 		}
 	}

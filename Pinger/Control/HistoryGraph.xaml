@@ -26,7 +26,6 @@
 		>
 			<lvc:CartesianChart.AxisY>
 				<lvc:Axis
-					MinValue="0"
 					LabelFormatter="{Binding YFormatter}"
 				/>
 			</lvc:CartesianChart.AxisY>
