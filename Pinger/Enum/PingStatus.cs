@@ -25,6 +25,17 @@ namespace Pinger.Enum {
 			}
 		}
 
+		public static bool IsError(this PingStatus status) {
+			// ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
+			switch (status) {
+				case PingStatus.Fail:
+				case PingStatus.Timeout:
+					return true;
+				default:
+					return false;
+			}
+		}
+
 		public static string StatusMessage(this PingStatus status) {
 			switch (status) {
 				case PingStatus.None:

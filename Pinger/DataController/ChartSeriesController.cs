@@ -35,23 +35,22 @@ namespace Pinger.DataController {
             ChartValues.Add(Convert.ToDouble(value));
         }
 
+        public void Clear() {
+            ChartValues.Clear();
+
+            for (int i = 0; i < PointCount; i++) {
+                ChartValues.Add(DefaultValue);
+            }
+        }
+
         public void AddPoint(int value) {
             ChartValues.RemoveAt(0);
             AddPointInternal(value);
         }
 
-        public void PopulateFromArray(int[] array) {
-            ChartValues.Clear();
-
-            int startIndex = PointCount - array.Length;
-            for (int i = 0; i < PointCount; i++) {
-                if (i < startIndex) {
-                    ChartValues.Add(DefaultValue);
-                    continue;
-                }
-
-                AddPointInternal(array[i - startIndex]);
-            }
+        public void AddBlankPoint() {
+            ChartValues.RemoveAt(0);
+            ChartValues.Add(DefaultValue);
         }
     }
 }

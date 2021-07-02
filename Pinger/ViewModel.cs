@@ -1,10 +1,13 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
 using Pinger.Container;
 using Pinger.DataController;
+using Pinger.Enum;
+using Pinger.Extensions;
 
 namespace Pinger {
 	public class ViewModel : BindableBase {
@@ -86,11 +89,29 @@ namespace Pinger {
 			RefreshTimer.Start();
 		}
 
+		private void PlotChartPoint(int ping, PingStatus status) {
+			if (status.IsError()) {
+				ChartSeriesController.AddBlankPoint();
+				return;
+			}
+
+			ChartSeriesController.AddPoint(ping);
+		}
+
+		private void UpdateChartSeriesFromSite(PingSite site) {
+			ChartSeriesController.Clear();
+
+			IEnumerable<PingSiteHistory> trimmedHistory = site.PingHistory.Reverse().TakeLast(ChartSeriesController.PointCount);
+			foreach (PingSiteHistory history in trimmedHistory) {
+				PlotChartPoint(history.Ping, history.Status);
+			}
+		}
+
 		private async void RefreshSite(PingSite site) {
 			await site.Refresh();
 
 			if (site == SelectedSite) {
-				ChartSeriesController.AddPoint(site.Ping);
+				PlotChartPoint(site.Ping, site.Status);
 			}
 		}
 
@@ -98,12 +119,6 @@ namespace Pinger {
 			foreach (PingSite site in Sites) {
 				RefreshSite(site);
 			}
-		}
-
-		private void UpdateChartSeriesFromSite(PingSite site) {
-			int[] pingTimes = site.PingHistory.Select(x => x.Ping).ToArray();
-
-			ChartSeriesController.PopulateFromArray(pingTimes);
 		}
 
 		private void RefreshTimer_Tick(object sender, EventArgs e) {

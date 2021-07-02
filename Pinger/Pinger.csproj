@@ -105,6 +105,7 @@
     <Compile Include="DataController\ChartSeriesController.cs" />
     <Compile Include="Enum\PingStatus.cs" />
     <Compile Include="Extensions\ArrayExtensions.cs" />
+    <Compile Include="Extensions\IEnumerableExtensions.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="ViewModel.cs" />
     <Page Include="Control\HistoryGraph.xaml" />
