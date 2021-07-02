@@ -9,6 +9,8 @@
             ViewModel = new ViewModel();
 
             InitializeComponent();
+
+            Services.Tracker.Track(this);
         }
     }
 }
