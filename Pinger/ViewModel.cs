@@ -4,19 +4,27 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
+using Jot.Configuration;
 using Pinger.Container;
 using Pinger.DataController;
 using Pinger.Enum;
 using Pinger.Extensions;
 
 namespace Pinger {
-    public class ViewModel : BindableBase {
+    public class ViewModel : BindableBase, ITrackingAware {
         public ObservableCollection<PingSite> Sites { get; }
+        private string[] PingSiteRawHosts { get; set; }
 
         private PingSite _selectedSite;
         public PingSite SelectedSite {
             get => _selectedSite;
             set => SetProperty(ref _selectedSite, value);
+        }
+
+        private int _selectedIndex;
+        public int SelectedIndex {
+            get => _selectedIndex;
+            set => SetProperty(ref _selectedIndex, value);
         }
 
         public CommandHandler CommandAdd { get; }
@@ -47,10 +55,17 @@ namespace Pinger {
             set => SetProperty(ref _siteName, value);
         }
 
+        private bool _graphExpanded;
+        public bool GraphExpanded {
+            get => _graphExpanded;
+            set {
+                _graphExpanded = value;
+                SetProperty(ref _graphExpanded, value);
+            }
+        }
+
         public ViewModel() {
             Sites = new ObservableCollection<PingSite>();
-            Sites.Add(new PingSite(new Uri("https://www.google.com")));
-
             ChartSeriesController = new ChartSeriesController();
 
             RefreshTimer = new DispatcherTimer();
@@ -62,11 +77,70 @@ namespace Pinger {
             CommandRemove = new CommandHandler(BtnRemove_Clicked);
             CommandSelectedSiteChanged = new CommandHandler(LstSites_SelectionChanged);
 
-            // If we have any pre-loaded sites trigger an initial refresh
-            if (Sites.Count > 0) {
-                SelectedSite = Sites.First();
-                RefreshSites();
+            Services.Tracker.Track(this);
+            PostTrackerPropagation();
+
+            RefreshSites();
+        }
+
+        public void ConfigureTracking(TrackingConfiguration configuration) {
+            configuration.AsGeneric<ViewModel>()
+                .Properties(
+                    viewModel => new {
+                        viewModel.PingSiteRawHosts,
+                        viewModel.RefreshDelay,
+                        viewModel.GraphExpanded,
+                        viewModel.SelectedIndex,
+                    }
+                );
+
+
+            Application.Current.Exit += (sender, e) => {
+                PopulateRawHosts();
+
+                configuration.Tracker.Persist(this);
+            };
+        }
+
+        private void PopulateRawHosts() {
+            PingSiteRawHosts = Sites.Select(site => site.Location.AbsoluteUri).ToArray();
+        }
+
+        private void LoadRawHosts() {
+            if (PingSiteRawHosts == null) {
+                return;
             }
+
+            foreach (string rawHost in PingSiteRawHosts) {
+                Sites.Add(new PingSite(new Uri(rawHost)));
+            }
+        }
+
+        private void PostTrackerPropagation() {
+            LoadRawHosts();
+
+            // Add default example site if none are found
+            if (Sites.Count == 0) {
+                Sites.Add(new PingSite(new Uri("https://www.google.com/")));
+            }
+
+            SelectedSite = LoadSelectedSite();
+        }
+
+        private PingSite LoadSelectedSite() {
+            if (SelectedIndex < 0) {
+                return null;
+            }
+
+            if (Sites.ElementAtOrDefault(SelectedIndex) != null) {
+                return Sites.ElementAt(SelectedIndex);
+            }
+
+            if (Sites.Count >= 1) {
+                return Sites.First();
+            }
+
+            return null;
         }
 
         private static Uri SiteStringToUri(string siteName) {

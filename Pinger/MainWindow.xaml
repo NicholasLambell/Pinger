@@ -102,7 +102,7 @@
             <Expander
                 Header="History Graph"
                 ExpandDirection="Down"
-                IsExpanded="False"
+                IsExpanded="{ Binding GraphExpanded }"
                 DockPanel.Dock="Top"
             >
                 <control:HistoryGraph
@@ -121,6 +121,7 @@
 
                 <ListBox
                     ItemsSource="{Binding Sites}"
+                    SelectedIndex="{ Binding SelectedIndex, Mode=OneWayToSource }"
                     SelectedItem="{ Binding SelectedSite }"
                     dd:DragDrop.IsDragSource="True"
                     dd:DragDrop.IsDropTarget="True"
