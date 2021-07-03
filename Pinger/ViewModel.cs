@@ -12,32 +12,30 @@ using Pinger.Extensions;
 
 namespace Pinger {
     public class ViewModel : BindableBase, ITrackingAware {
-        public ObservableCollection<PingSite> Sites { get; }
+        #region Props
+
         private string[] PingSiteRawHosts { get; set; }
-
-        private PingSite _selectedSite;
-        public PingSite SelectedSite {
-            get => _selectedSite;
-            set => SetProperty(ref _selectedSite, value);
-        }
-
-        private int _selectedIndex;
-        public int SelectedIndex {
-            get => _selectedIndex;
-            set => SetProperty(ref _selectedIndex, value);
-        }
+        public DispatcherTimer RefreshTimer { get; }
+        public ObservableCollection<PingSite> Sites { get; }
 
         public CommandHandler CommandAdd { get; }
         public CommandHandler CommandRemove { get; }
         public CommandHandler CommandSiteNameSubmit { get; }
         public CommandHandler CommandSelectedSiteChanged { get; }
 
-        public DispatcherTimer RefreshTimer { get; }
-
         private ChartSeriesController _chartSeriesController;
         public ChartSeriesController ChartSeriesController {
             get => _chartSeriesController;
             set => SetProperty(ref _chartSeriesController, value);
+        }
+
+        private bool _graphExpanded;
+        public bool GraphExpanded {
+            get => _graphExpanded;
+            set {
+                _graphExpanded = value;
+                SetProperty(ref _graphExpanded, value);
+            }
         }
 
         private int _refreshDelay;
@@ -49,20 +47,25 @@ namespace Pinger {
             }
         }
 
+        private int _selectedIndex;
+        public int SelectedIndex {
+            get => _selectedIndex;
+            set => SetProperty(ref _selectedIndex, value);
+        }
+
+        private PingSite _selectedSite;
+        public PingSite SelectedSite {
+            get => _selectedSite;
+            set => SetProperty(ref _selectedSite, value);
+        }
+
         private string _siteName;
         public string SiteName {
             get => _siteName;
             set => SetProperty(ref _siteName, value);
         }
 
-        private bool _graphExpanded;
-        public bool GraphExpanded {
-            get => _graphExpanded;
-            set {
-                _graphExpanded = value;
-                SetProperty(ref _graphExpanded, value);
-            }
-        }
+        #endregion
 
         public ViewModel() {
             Sites = new ObservableCollection<PingSite>();
