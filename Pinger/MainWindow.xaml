@@ -52,7 +52,7 @@
 
                 <xctk:IntegerUpDown
                     Minimum="1"
-                    Value="{ Binding RefreshDelay }"
+                    Value="{ Binding Settings.RefreshDelay }"
                     Grid.Column="1"
                 />
 
@@ -102,7 +102,7 @@
             <Expander
                 Header="History Graph"
                 ExpandDirection="Down"
-                IsExpanded="{ Binding GraphExpanded }"
+                IsExpanded="{ Binding Settings.GraphExpanded }"
                 DockPanel.Dock="Top"
             >
                 <control:HistoryGraph

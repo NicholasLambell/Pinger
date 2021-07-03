@@ -8,6 +8,8 @@
         public MainWindow() {
             ViewModel = new ViewModel();
 
+            Services.Tracker.Track(App.Settings);
+
             InitializeComponent();
 
             Services.Tracker.Track(this);

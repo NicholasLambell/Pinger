@@ -9,6 +9,7 @@ using Pinger.Container;
 using Pinger.DataController;
 using Pinger.Enum;
 using Pinger.Extensions;
+using Pinger.Settings;
 
 namespace Pinger {
     public class ViewModel : BindableBase, ITrackingAware {
@@ -16,6 +17,7 @@ namespace Pinger {
 
         private string[] PingSiteRawHosts { get; set; }
         public DispatcherTimer RefreshTimer { get; }
+        public AppSettings Settings { get; }
         public ObservableCollection<PingSite> Sites { get; }
 
         public CommandHandler CommandAdd { get; }
@@ -27,24 +29,6 @@ namespace Pinger {
         public ChartSeriesController ChartSeriesController {
             get => _chartSeriesController;
             set => SetProperty(ref _chartSeriesController, value);
-        }
-
-        private bool _graphExpanded;
-        public bool GraphExpanded {
-            get => _graphExpanded;
-            set {
-                _graphExpanded = value;
-                SetProperty(ref _graphExpanded, value);
-            }
-        }
-
-        private int _refreshDelay;
-        public int RefreshDelay {
-            get => _refreshDelay;
-            set {
-                _refreshDelay = value;
-                SetTimerDelay(value);
-            }
         }
 
         private int _selectedIndex;
@@ -68,12 +52,13 @@ namespace Pinger {
         #endregion
 
         public ViewModel() {
+            Settings = App.Settings;
             Sites = new ObservableCollection<PingSite>();
             ChartSeriesController = new ChartSeriesController();
 
             RefreshTimer = new DispatcherTimer();
             RefreshTimer.Tick += RefreshTimer_Tick;
-            RefreshDelay = 2;
+            Settings.PropertyValueChanged(nameof(Settings.RefreshDelay), value => SetTimerDelay((int)value));
 
             CommandAdd = new CommandHandler(AddSite);
             CommandSiteNameSubmit = new CommandHandler(AddSite);
@@ -83,6 +68,7 @@ namespace Pinger {
             Services.Tracker.Track(this);
             PostTrackerPropagation();
 
+            SetTimerDelay(Settings.RefreshDelay);
             RefreshSites();
         }
 
@@ -91,8 +77,6 @@ namespace Pinger {
                 .Properties(
                     viewModel => new {
                         viewModel.PingSiteRawHosts,
-                        viewModel.RefreshDelay,
-                        viewModel.GraphExpanded,
                         viewModel.SelectedIndex,
                     }
                 );
