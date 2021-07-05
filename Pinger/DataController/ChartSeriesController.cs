@@ -1,19 +1,11 @@
-using System;
+using System.Windows.Media;
 using LiveCharts;
-using LiveCharts.Wpf;
-using Pinger.Extensions;
 
 namespace Pinger.DataController {
-    public class ChartSeriesController: BindableBase {
-        private const double DefaultValue = double.NaN;
+    public class ChartSeriesController : BindableBase {
+        #region Props
 
         public int PointCount { get; }
-
-        private IChartValues _chartValues;
-        public IChartValues ChartValues {
-            get => _chartValues;
-            set => SetProperty(ref _chartValues, value);
-        }
 
         private SeriesCollection _seriesCollection;
         public SeriesCollection SeriesCollection {
@@ -21,36 +13,29 @@ namespace Pinger.DataController {
             set => SetProperty(ref _seriesCollection, value);
         }
 
+        #endregion
+
         public ChartSeriesController() : this(50) {}
 
         public ChartSeriesController(int pointCount) {
             PointCount = pointCount;
-
-            ChartValues = new ChartValues<double>(new double[PointCount].Populate(DefaultValue));
-
-            SeriesCollection = new SeriesCollection { new LineSeries { Values = ChartValues } };
-        }
-
-        private void AddPointInternal(int value) {
-            ChartValues.Add(Convert.ToDouble(value));
+            SeriesCollection = new SeriesCollection();
         }
 
         public void Clear() {
-            ChartValues.Clear();
-
-            for (int i = 0; i < PointCount; i++) {
-                ChartValues.Add(DefaultValue);
-            }
+            SeriesCollection.Clear();
         }
 
-        public void AddPoint(int value) {
-            ChartValues.RemoveAt(0);
-            AddPointInternal(value);
+        public ChartValuesController AddSeries(Color color) {
+            ChartValuesController valuesController = new ChartValuesController(PointCount, color);
+
+            SeriesCollection.Add(valuesController.ChartSeries);
+
+            return valuesController;
         }
 
-        public void AddBlankPoint() {
-            ChartValues.RemoveAt(0);
-            ChartValues.Add(DefaultValue);
+        public void RemoveSeries(ChartValuesController valuesController) {
+            SeriesCollection.Remove(valuesController.ChartSeries);
         }
     }
 }

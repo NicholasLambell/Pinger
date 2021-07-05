@@ -95,6 +95,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Behavior\ListBoxSelectionBehavior.cs" />
+    <Compile Include="Behavior\PingSiteListBoxSelectionBehavior.cs" />
     <Compile Include="BindableBase.cs" />
     <Compile Include="CommandHandler.cs" />
     <Compile Include="Container\PingSite.cs" />
@@ -108,15 +110,18 @@
     <Compile Include="Control\VerticalDivider.xaml.cs">
       <DependentUpon>VerticalDivider.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converter\ColorToBrush.cs" />
     <Compile Include="Converter\PingStatusToColor.cs" />
     <Compile Include="Converter\PingTimeoutToString.cs" />
     <Compile Include="DataController\ChartSeriesController.cs" />
+    <Compile Include="DataController\ChartValuesController.cs" />
     <Compile Include="Enum\PingStatus.cs" />
     <Compile Include="Extensions\ArrayExtensions.cs" />
     <Compile Include="Extensions\IEnumerableExtensions.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Services.cs" />
     <Compile Include="Settings\AppSettings.cs" />
+    <Compile Include="Util\RandomUtil.cs" />
     <Compile Include="ViewModel.cs" />
     <Page Include="Control\HistoryGraph.xaml" />
     <Page Include="Control\RemoveButton.xaml" />

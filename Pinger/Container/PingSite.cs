@@ -2,13 +2,21 @@ using System;
 using System.Collections.ObjectModel;
 using System.Net.NetworkInformation;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using Pinger.Enum;
+using Pinger.Util;
 
 namespace Pinger.Container {
     public class PingSite : BindableBase {
         #region Props
 
         public ObservableCollection<PingSiteHistory> PingHistory { get; }
+
+        private Color _chartColor;
+        public Color ChartColor {
+            get => _chartColor;
+            set => SetProperty(ref _chartColor, value);
+        }
 
         private Uri _location;
         public Uri Location {
@@ -49,6 +57,7 @@ namespace Pinger.Container {
 
         public PingSite(Uri location) {
             Location = location;
+            ChartColor = RandomUtil.NextColor();
             Ping = 0;
             Status = PingStatus.None;
             PingHistory = new ObservableCollection<PingSiteHistory>();

@@ -10,6 +10,7 @@
     xmlns:converter="clr-namespace:Pinger.Converter"
     xmlns:control="clr-namespace:Pinger.Control"
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+    xmlns:behavior="clr-namespace:Pinger.Behavior"
     mc:Ignorable="d"
     Title="Pinger"
     MinHeight="140"
@@ -19,6 +20,7 @@
     DataContext="{Binding Path=ViewModel, RelativeSource={RelativeSource Self}}"
 >
     <Window.Resources>
+        <converter:ColorToBrush x:Key="ColorToBrush" />
         <converter:PingStatusToColor x:Key="PingStatusToColor" />
         <converter:PingTimeoutToString x:Key="PingTimeoutToString" />
     </Window.Resources>
@@ -123,18 +125,14 @@
                     ItemsSource="{Binding Sites}"
                     SelectedIndex="{ Binding SelectedIndex, Mode=OneWayToSource }"
                     SelectedItem="{ Binding SelectedSite }"
+                    SelectionMode="Extended"
                     dd:DragDrop.IsDragSource="True"
                     dd:DragDrop.IsDropTarget="True"
                     Grid.Column="0"
                 >
-                    <behaviors:Interaction.Triggers>
-                        <behaviors:EventTrigger EventName="SelectionChanged">
-                            <behaviors:InvokeCommandAction
-                                Command="{Binding CommandSelectedSiteChanged}"
-                                CommandParameter="{ Binding Path=SelectedItem, RelativeSource={RelativeSource AncestorType={x:Type ListBox}} }"
-                            />
-                        </behaviors:EventTrigger>
-                    </behaviors:Interaction.Triggers>
+                    <behaviors:Interaction.Behaviors>
+                        <behavior:PingSiteListBoxSelectionBehavior SelectedItems="{ Binding SelectedSites }" />
+                    </behaviors:Interaction.Behaviors>
                     <ListBox.ItemContainerStyle>
                         <Style TargetType="ListBoxItem">
                             <Setter Property="Padding" Value="5" />
@@ -175,6 +173,7 @@
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
 
                                     <TextBlock
@@ -206,6 +205,18 @@
                                             </MultiBinding>
                                         </TextBlock.Text>
                                     </TextBlock>
+
+                                    <Rectangle
+                                        Fill="{
+                                            Binding ChartColor,
+                                            Converter={ StaticResource ColorToBrush }
+                                        }"
+                                        MinWidth="10"
+                                        ToolTip="Graph Color"
+                                        Grid.Row="0"
+                                        Grid.Column="2"
+                                        Grid.RowSpan="2"
+                                    />
                                 </Grid>
 
                                 <control:VerticalDivider

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -16,6 +17,8 @@ namespace Pinger {
         #region Props
 
         private string[] PingSiteRawHosts { get; set; }
+        private Dictionary<PingSite, ChartValuesController> ChartValuesMap { get; }
+
         public DispatcherTimer RefreshTimer { get; }
         public AppSettings Settings { get; }
         public ObservableCollection<PingSite> Sites { get; }
@@ -23,7 +26,6 @@ namespace Pinger {
         public CommandHandler CommandAdd { get; }
         public CommandHandler CommandRemove { get; }
         public CommandHandler CommandSiteNameSubmit { get; }
-        public CommandHandler CommandSelectedSiteChanged { get; }
 
         private ChartSeriesController _chartSeriesController;
         public ChartSeriesController ChartSeriesController {
@@ -43,6 +45,12 @@ namespace Pinger {
             set => SetProperty(ref _selectedSite, value);
         }
 
+        private IList<PingSite> _selectedSites;
+        public IList<PingSite> SelectedSites {
+            get => _selectedSites;
+            set => SetProperty(ref _selectedSites, value);
+        }
+
         private string _siteName;
         public string SiteName {
             get => _siteName;
@@ -55,18 +63,26 @@ namespace Pinger {
             Settings = App.Settings;
             Sites = new ObservableCollection<PingSite>();
             ChartSeriesController = new ChartSeriesController();
+            ChartValuesMap = new Dictionary<PingSite, ChartValuesController>();
+            SelectedSites = new List<PingSite>();
 
             RefreshTimer = new DispatcherTimer();
             RefreshTimer.Tick += RefreshTimer_Tick;
             Settings.PropertyValueChanged(nameof(Settings.RefreshDelay), value => SetTimerDelay((int)value));
 
+            PropertyValueChanged(nameof(SelectedSites), SelectedSites_Changed);
+
             CommandAdd = new CommandHandler(AddSite);
             CommandSiteNameSubmit = new CommandHandler(AddSite);
             CommandRemove = new CommandHandler(BtnRemove_Clicked);
-            CommandSelectedSiteChanged = new CommandHandler(LstSites_SelectionChanged);
 
             Services.Tracker.Track(this);
             PostTrackerPropagation();
+
+            // todo: this will have to be based off persisted selection
+            foreach (PingSite site in Sites) {
+                AddChartSeries(site);
+            }
 
             SetTimerDelay(Settings.RefreshDelay);
             RefreshSites();
@@ -148,32 +164,64 @@ namespace Pinger {
             RefreshTimer.Start();
         }
 
-        private void PlotChartPoint(int ping, PingStatus status) {
-            if (status.IsError()) {
-                ChartSeriesController.AddBlankPoint();
-                return;
-            }
-
-            ChartSeriesController.AddPoint(ping);
+        private ChartValuesController GetChartValuesForSite(PingSite site) {
+            return ChartValuesMap[site];
         }
 
-        private void UpdateChartSeriesFromSite(PingSite site) {
-            ChartSeriesController.Clear();
+        private bool SiteOnChart(PingSite site) {
+            return ChartValuesMap.ContainsKey(site);
+        }
 
+        private void ClearChartSeries() {
+            ChartSeriesController.Clear();
+            ChartValuesMap.Clear();
+        }
+
+        private ChartValuesController AddChartSeries(PingSite site) {
+            ChartValuesController valuesController = ChartSeriesController.AddSeries(site.ChartColor);
+            ChartValuesMap[site] = valuesController;
+
+            if (site.PingHistory.Count != 0) {
+                PlotSiteHistory(site);
+            }
+
+            return valuesController;
+        }
+
+        private void PlotSiteHistory(PingSite site) {
             IEnumerable<PingSiteHistory> trimmedHistory = site.PingHistory
                 .Reverse()
                 .TakeLast(ChartSeriesController.PointCount);
 
             foreach (PingSiteHistory history in trimmedHistory) {
-                PlotChartPoint(history.Ping, history.Status);
+                PlotChartPoint(site, history.Ping, history.Status);
+            }
+        }
+
+        private void PlotChartPoint(PingSite site, int ping, PingStatus status) {
+            ChartValuesController valuesController = GetChartValuesForSite(site);
+
+            if (status.IsError()) {
+                valuesController.AddBlankPoint();
+                return;
+            }
+
+            valuesController.AddPoint(ping);
+        }
+
+        private void UpdateChartSeriesFromSites(IEnumerable sites) {
+            ClearChartSeries();
+
+            foreach (PingSite site in sites) {
+                AddChartSeries(site);
             }
         }
 
         private async void RefreshSite(PingSite site) {
             await site.Refresh();
 
-            if (site == SelectedSite) {
-                PlotChartPoint(site.Ping, site.Status);
+            if (SiteOnChart(site)) {
+                PlotChartPoint(site, site.Ping, site.Status);
             }
         }
 
@@ -185,6 +233,14 @@ namespace Pinger {
 
         private void RefreshTimer_Tick(object sender, EventArgs e) {
             RefreshSites();
+        }
+
+        private void SelectedSites_Changed(object value) {
+            if (!(value is IList sites)) {
+                return;
+            }
+
+            UpdateChartSeriesFromSites(sites);
         }
 
         private void AddSite(object param) {
@@ -220,14 +276,6 @@ namespace Pinger {
             if (confirmResult == MessageBoxResult.Yes) {
                 Sites.Remove(site);
             }
-        }
-
-        private void LstSites_SelectionChanged(object param) {
-            if (!(param is PingSite site)) {
-                return;
-            }
-
-            UpdateChartSeriesFromSite(site);
         }
     }
 }
