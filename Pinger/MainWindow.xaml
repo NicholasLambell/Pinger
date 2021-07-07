@@ -11,6 +11,7 @@
     xmlns:control="clr-namespace:Pinger.Control"
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
     xmlns:behavior="clr-namespace:Pinger.Behavior"
+    xmlns:container="clr-namespace:Pinger.Container"
     mc:Ignorable="d"
     Title="Pinger"
     MinHeight="140"
@@ -122,9 +123,8 @@
                 </Grid.ColumnDefinitions>
 
                 <ListBox
+                    x:Name="LstPingSites"
                     ItemsSource="{Binding Sites}"
-                    SelectedIndex="{ Binding SelectedIndex, Mode=OneWayToSource }"
-                    SelectedItem="{ Binding SelectedSite }"
                     SelectionMode="Extended"
                     dd:DragDrop.IsDragSource="True"
                     dd:DragDrop.IsDropTarget="True"
@@ -239,7 +239,10 @@
 
 
                 <ListBox
-                    ItemsSource="{ Binding SelectedSite.PingHistory }"
+                    ItemsSource="{ Binding
+                        ElementName=LstPingSites,
+                        Path=SelectedItem.(container:PingSite.PingHistory)
+                    }"
                     Grid.Column="1"
                 >
                     <ListBox.ItemContainerStyle>

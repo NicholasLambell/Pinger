@@ -16,7 +16,7 @@ namespace Pinger {
     public class ViewModel : BindableBase, ITrackingAware {
         #region Props
 
-        private string[] PingSiteRawHosts { get; set; }
+        private PingSitePersistence[] SitePersistenceValues { get; set; }
         private Dictionary<PingSite, ChartValuesController> ChartValuesMap { get; }
 
         public DispatcherTimer RefreshTimer { get; }
@@ -31,18 +31,6 @@ namespace Pinger {
         public ChartSeriesController ChartSeriesController {
             get => _chartSeriesController;
             set => SetProperty(ref _chartSeriesController, value);
-        }
-
-        private int _selectedIndex;
-        public int SelectedIndex {
-            get => _selectedIndex;
-            set => SetProperty(ref _selectedIndex, value);
-        }
-
-        private PingSite _selectedSite;
-        public PingSite SelectedSite {
-            get => _selectedSite;
-            set => SetProperty(ref _selectedSite, value);
         }
 
         private IList<PingSite> _selectedSites;
@@ -79,11 +67,6 @@ namespace Pinger {
             Services.Tracker.Track(this);
             PostTrackerPropagation();
 
-            // todo: this will have to be based off persisted selection
-            foreach (PingSite site in Sites) {
-                AddChartSeries(site);
-            }
-
             SetTimerDelay(Settings.RefreshDelay);
             RefreshSites();
         }
@@ -92,58 +75,53 @@ namespace Pinger {
             configuration.AsGeneric<ViewModel>()
                 .Properties(
                     viewModel => new {
-                        viewModel.PingSiteRawHosts,
-                        viewModel.SelectedIndex,
+                        viewModel.SitePersistenceValues,
                     }
                 );
 
 
             Application.Current.Exit += (sender, e) => {
-                PopulateRawHosts();
+                SaveSitePersistence();
 
                 configuration.Tracker.Persist(this);
             };
         }
 
-        private void PopulateRawHosts() {
-            PingSiteRawHosts = Sites.Select(site => site.Location.AbsoluteUri).ToArray();
+        private void SaveSitePersistence() {
+            SitePersistenceValues = Sites.Select(site => new PingSitePersistence(site, SelectedSites.Contains(site))).ToArray();
         }
 
-        private void LoadRawHosts() {
-            if (PingSiteRawHosts == null) {
+        private void LoadSitePersistence() {
+            if (SitePersistenceValues == null) {
                 return;
             }
 
-            foreach (string rawHost in PingSiteRawHosts) {
-                Sites.Add(new PingSite(new Uri(rawHost)));
+            foreach (PingSitePersistence sitePersistence in SitePersistenceValues) {
+                PingSite site = sitePersistence.GetInstance();
+                Sites.Add(site);
+
+                if (sitePersistence.Selected) {
+                    SelectedSites.Add(site);
+                }
             }
         }
 
         private void PostTrackerPropagation() {
-            LoadRawHosts();
+            LoadSitePersistence();
 
             // Add default example site if none are found
             if (Sites.Count == 0) {
                 Sites.Add(new PingSite(new Uri("https://www.google.com/")));
             }
 
-            SelectedSite = LoadSelectedSite();
-        }
-
-        private PingSite LoadSelectedSite() {
-            if (SelectedIndex < 0) {
-                return null;
+            // Default select the first site if nothing else is selected
+            if (SelectedSites.Count == 0) {
+                SelectedSites.Add(Sites.First());
             }
 
-            if (Sites.ElementAtOrDefault(SelectedIndex) != null) {
-                return Sites.ElementAt(SelectedIndex);
+            foreach (PingSite site in SelectedSites) {
+                AddChartSeries(site);
             }
-
-            if (Sites.Count >= 1) {
-                return Sites.First();
-            }
-
-            return null;
         }
 
         private static Uri SiteStringToUri(string siteName) {

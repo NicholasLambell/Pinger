@@ -55,9 +55,11 @@ namespace Pinger.Container {
 
         #endregion
 
-        public PingSite(Uri location) {
+        public PingSite(Uri location) : this(location, RandomUtil.NextColor()) {}
+
+        public PingSite(Uri location, Color chartColor) {
             Location = location;
-            ChartColor = RandomUtil.NextColor();
+            ChartColor = chartColor;
             Ping = 0;
             Status = PingStatus.None;
             PingHistory = new ObservableCollection<PingSiteHistory>();

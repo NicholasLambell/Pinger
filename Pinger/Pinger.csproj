@@ -101,6 +101,7 @@
     <Compile Include="CommandHandler.cs" />
     <Compile Include="Container\PingSite.cs" />
     <Compile Include="Container\PingSiteHistory.cs" />
+    <Compile Include="Container\PingSitePersistence.cs" />
     <Compile Include="Control\HistoryGraph.xaml.cs">
       <DependentUpon>HistoryGraph.xaml</DependentUpon>
     </Compile>
@@ -121,6 +122,7 @@
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Services.cs" />
     <Compile Include="Settings\AppSettings.cs" />
+    <Compile Include="Util\ColorUtil.cs" />
     <Compile Include="Util\RandomUtil.cs" />
     <Compile Include="ViewModel.cs" />
     <Page Include="Control\HistoryGraph.xaml" />
