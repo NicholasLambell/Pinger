@@ -22,8 +22,16 @@ namespace Pinger.Control {
         public HistoryGraph() {
             InitializeComponent();
 
-            YFormatter = value => string.Format("{0:N0}ms", value);
+            YFormatter = FormatYAxisLabel;
             DataContext = this;
+        }
+
+        private static string FormatYAxisLabel(double value) {
+            if (value < 0) {
+                return "";
+            }
+
+            return string.Format("{0:N0}ms", value);
         }
     }
 }
