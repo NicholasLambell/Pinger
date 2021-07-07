@@ -33,6 +33,12 @@ namespace Pinger {
             set => SetProperty(ref _chartSeriesController, value);
         }
 
+        private bool _pingHistoryVisible;
+        public bool PingHistoryVisible {
+            get => _pingHistoryVisible;
+            set => SetProperty(ref _pingHistoryVisible, value);
+        }
+
         private IList<PingSite> _selectedSites;
         public IList<PingSite> SelectedSites {
             get => _selectedSites;
@@ -119,9 +125,13 @@ namespace Pinger {
                 SelectedSites.Add(Sites.First());
             }
 
-            foreach (PingSite site in SelectedSites) {
-                AddChartSeries(site);
-            }
+            UpdateFromSiteSelection(SelectedSites);
+        }
+
+        private void UpdateFromSiteSelection(ICollection<PingSite> sites) {
+            PingHistoryVisible = sites.Count == 1;
+
+            UpdateChartSeriesFromSites(sites);
         }
 
         private static Uri SiteStringToUri(string siteName) {
@@ -214,11 +224,11 @@ namespace Pinger {
         }
 
         private void SelectedSites_Changed(object value) {
-            if (!(value is IList sites)) {
+            if (!(value is IList<PingSite> sites)) {
                 return;
             }
 
-            UpdateChartSeriesFromSites(sites);
+            UpdateFromSiteSelection(sites);
         }
 
         private void AddSite(object param) {
