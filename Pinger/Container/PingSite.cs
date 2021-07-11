@@ -3,8 +3,8 @@ using System.Collections.ObjectModel;
 using System.Net.NetworkInformation;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using Pinger.Const;
 using Pinger.Enum;
-using Pinger.Util;
 
 namespace Pinger.Container {
     public class PingSite : BindableBase {
@@ -55,7 +55,7 @@ namespace Pinger.Container {
 
         #endregion
 
-        public PingSite(Uri location) : this(location, RandomUtil.NextColor()) {}
+        public PingSite(Uri location) : this(location, ChartSeriesColors.Random()) {}
 
         public PingSite(Uri location, Color chartColor) {
             Location = location;

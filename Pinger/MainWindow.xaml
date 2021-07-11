@@ -217,13 +217,24 @@
                                         </TextBlock.Text>
                                     </TextBlock>
 
-                                    <Rectangle
-                                        Fill="{
+                                    <xctk:ColorPicker
+                                        BorderThickness="0"
+                                        DisplayColorAndName="False"
+                                        DisplayColorTooltip="False"
+                                        ShowDropDownButton="False"
+                                        ShowStandardColors="False"
+                                        ToolTip="Graph Color"
+                                        UsingAlphaChannel="False"
+                                        Width="12"
+                                        AvailableColors="{ Binding
+                                            RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}},
+                                            Path=DataContext.AvailableChartColors
+                                        }"
+                                        Background="{
                                             Binding ChartColor,
                                             Converter={ StaticResource ColorToBrush }
                                         }"
-                                        MinWidth="10"
-                                        ToolTip="Graph Color"
+                                        SelectedColor="{ Binding ChartColor }"
                                         Grid.Row="0"
                                         Grid.Column="2"
                                         Grid.RowSpan="2"

@@ -6,11 +6,14 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
 using Jot.Configuration;
+using Pinger.Const;
 using Pinger.Container;
 using Pinger.DataController;
 using Pinger.Enum;
 using Pinger.Extensions;
 using Pinger.Settings;
+using Xceed.Wpf.Toolkit;
+using MessageBox = System.Windows.MessageBox;
 
 namespace Pinger {
     public class ViewModel : BindableBase, ITrackingAware {
@@ -19,6 +22,7 @@ namespace Pinger {
         private PingSitePersistence[] SitePersistenceValues { get; set; }
         private Dictionary<PingSite, ChartValuesController> ChartValuesMap { get; }
 
+        public ObservableCollection<ColorItem> AvailableChartColors { get; } = new ObservableCollection<ColorItem>(ChartSeriesColors.All.Select(color => new ColorItem(color, "")));
         public DispatcherTimer RefreshTimer { get; }
         public AppSettings Settings { get; }
         public ObservableCollection<PingSite> Sites { get; }
