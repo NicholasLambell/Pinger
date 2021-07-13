@@ -36,7 +36,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="GongSolutions.WPF.DragDrop, Version=2.0.0.0, Culture=neutral, PublicKeyToken=91f1945125b7a587">
-      <HintPath>..\packages\gong-wpf-dragdrop.2.0.3\lib\net46\GongSolutions.WPF.DragDrop.dll</HintPath>
+      <HintPath>..\packages\gong-wpf-dragdrop.2.3.2\lib\net47\GongSolutions.WPF.DragDrop.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Jot, Version=2.1.8.0, Culture=neutral, PublicKeyToken=6b498f69c5f88322">
