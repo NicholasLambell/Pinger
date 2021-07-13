@@ -10,7 +10,7 @@
     d:DesignHeight="300"
     d:DesignWidth="300"
     Height="300"
-    d:DataContext="{Binding RelativeSource={RelativeSource Self}}" >
+    d:DataContext="{ Binding RelativeSource={ RelativeSource Self } }" >
     <Grid>
         <Grid.Resources>
             <Style TargetType="lvc:LineSeries">
@@ -18,15 +18,15 @@
             </Style>
         </Grid.Resources>
         <lvc:CartesianChart
-            Series="{Binding GraphCollection}"
-            DataTooltip="{x:Null}"
+            Series="{ Binding GraphCollection }"
+            DataTooltip="{ x:Null }"
             DisableAnimations="True"
             Hoverable="False"
             LegendLocation="None"
         >
             <lvc:CartesianChart.AxisY>
                 <lvc:Axis
-                    LabelFormatter="{Binding YFormatter}"
+                    LabelFormatter="{ Binding YFormatter }"
                 />
             </lvc:CartesianChart.AxisY>
             <lvc:CartesianChart.AxisX>

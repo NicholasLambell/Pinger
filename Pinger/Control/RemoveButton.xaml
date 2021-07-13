@@ -20,7 +20,7 @@
                             Height="30"
                         >
                             <TextBlock x:Name="txt"
-                                Text="{TemplateBinding Content}"
+                                Text="{ TemplateBinding Content }"
                                 FontFamily="Segoe MDL2 Assets"
                                 FontSize="10"
                                 Foreground="#999999"
@@ -42,14 +42,14 @@
             </Setter>
         </Style>
 
-        <Style x:Key="RemoveButtonStyle" TargetType="Button" BasedOn="{StaticResource CaptionButtonStyle}">
+        <Style x:Key="RemoveButtonStyle" TargetType="Button" BasedOn="{ StaticResource CaptionButtonStyle }">
             <Setter Property="Content" Value="&#xE106;"/>
         </Style>
     </UserControl.Resources>
     <Button
-        Style="{StaticResource RemoveButtonStyle}"
-        DataContext="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type UserControl}}}"
-        Command="{Binding Command}"
-        CommandParameter="{Binding CommandParameter}"
+        Style="{ StaticResource RemoveButtonStyle }"
+        DataContext="{ Binding RelativeSource={ RelativeSource FindAncestor,AncestorType={ x:Type UserControl }} }"
+        Command="{ Binding Command }"
+        CommandParameter="{ Binding CommandParameter }"
     />
 </UserControl>
