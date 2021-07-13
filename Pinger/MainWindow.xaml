@@ -235,6 +235,7 @@
                                             Converter={ StaticResource ColorToBrush }
                                         }"
                                         SelectedColor="{ Binding ChartColor }"
+                                        dd:DragDrop.DragSourceIgnore="True"
                                         Grid.Row="0"
                                         Grid.Column="2"
                                         Grid.RowSpan="2"
@@ -252,6 +253,7 @@
                                         Path=DataContext.CommandRemove
                                     }"
                                     CommandParameter="{ Binding }"
+                                    dd:DragDrop.DragSourceIgnore="True"
                                     Grid.Column="4"
                                 />
                             </Grid>
