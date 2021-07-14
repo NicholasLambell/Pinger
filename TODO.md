@@ -14,6 +14,8 @@
     - [ ] UI per site to configure alerts under various circumstances. e.g. Error response, above average ping, or fixed threshold
         - Alert popup / display should make use of the site's chart color for easy identification
     - [ ] Code logic to implement above UI behaviours
+    
+- [ ] Dark Theme
 
 ### In Progress
 
